@@ -92,9 +92,7 @@ export default function Nav() {
                         role="menuitem"
                         onClick={() => setDropOpen(false)}
                       >
-                        <span className="nav-dropdown__num">{p.numero}</span>
-                        <span className="nav-dropdown__title">{p.titulo}</span>
-                        <span className="nav-dropdown__role">{p.rol}</span>
+                        {p.titulo}
                       </Link>
                     ))}
                   </div>

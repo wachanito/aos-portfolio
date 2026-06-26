@@ -107,41 +107,44 @@ img, video { display: block; max-width: 100%; }
 }
 .site-nav-mobile ul a:hover { color: var(--clr-red); }
 /* ── Nav dropdown ── */
+@keyframes nav-item-in {
+  from { opacity: 0; transform: translateX(-8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
 .nav-item--drop { position: relative; }
 .nav-dropdown {
   position: absolute; top: calc(100% + 14px); left: 50%;
   transform: translateX(-50%) translateY(-8px);
   background: var(--clr-bg); border: var(--border);
-  min-width: 260px;
+  min-width: 220px;
   opacity: 0; pointer-events: none;
-  transition: opacity .2s ease, transform .2s ease;
-  z-index: 9000;
+  transition: opacity .22s ease, transform .22s ease;
+  z-index: 9000; overflow: hidden;
 }
 .nav-item--drop.is-open .nav-dropdown {
   opacity: 1; pointer-events: auto;
   transform: translateX(-50%) translateY(0);
 }
+.nav-item--drop.is-open .nav-dropdown__item {
+  animation: nav-item-in .25s ease both;
+}
+.nav-item--drop.is-open .nav-dropdown__item:nth-child(1) { animation-delay: .04s; }
+.nav-item--drop.is-open .nav-dropdown__item:nth-child(2) { animation-delay: .09s; }
+.nav-item--drop.is-open .nav-dropdown__item:nth-child(3) { animation-delay: .14s; }
+.nav-item--drop.is-open .nav-dropdown__item:nth-child(4) { animation-delay: .19s; }
+.nav-item--drop.is-open .nav-dropdown__item:nth-child(5) { animation-delay: .24s; }
+.nav-item--drop.is-open .nav-dropdown__item:nth-child(6) { animation-delay: .29s; }
 .nav-dropdown__item {
-  display: flex; align-items: center; gap: 14px;
-  padding: 11px 16px; border-bottom: var(--border);
+  display: block; padding: 11px 18px; border-bottom: var(--border);
   color: var(--clr-text); text-decoration: none;
-  transition: background .18s ease, color .18s ease;
+  font-family: var(--ff-title); font-size: 12px;
+  text-transform: uppercase; letter-spacing: -0.01em;
+  transition: background .15s ease, color .15s ease, padding-left .15s ease;
+  opacity: 0;
 }
 .nav-dropdown__item:last-child { border-bottom: none; }
-.nav-dropdown__num {
-  font-family: var(--ff-title); font-size: 10px;
-  opacity: 0.38; flex-shrink: 0; letter-spacing: 0.05em;
-}
-.nav-dropdown__title {
-  font-family: var(--ff-title); font-size: 12px;
-  text-transform: uppercase; letter-spacing: -0.01em; flex: 1;
-}
-.nav-dropdown__role {
-  font-size: 9px; letter-spacing: 0.12em;
-  text-transform: uppercase; opacity: 0.45; flex-shrink: 0;
-}
 @media (hover: hover) {
-  .nav-dropdown__item:hover { background: var(--clr-text); color: var(--clr-bg); }
+  .nav-dropdown__item:hover { background: var(--clr-text); color: var(--clr-bg); padding-left: 26px; }
 }
 /* hamburguesa animada cuando nav-open */
 .nav-open .nav-toggle__bar:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
