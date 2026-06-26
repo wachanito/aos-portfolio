@@ -15,14 +15,48 @@ export default function Hero() {
     // ── GSAP entrance ──
     async function initGSAP() {
       const { gsap } = await import('gsap');
+
       if (REDUCED) {
-        document.querySelectorAll<HTMLElement>('.hero__title .word').forEach(w => { w.style.transform = 'translateY(0)'; });
+        document.querySelectorAll<HTMLElement>('.hero__title .word').forEach(w => { w.style.transform = 'none'; w.style.opacity = '1'; });
         const l = document.querySelector<HTMLElement>('.hero__label'); if (l) { l.style.opacity = '1'; l.style.transform = 'none'; }
+        const cta = document.querySelector<HTMLElement>('.hero__cta'); if (cta) cta.style.opacity = '1';
+        const hdr = document.querySelector<HTMLElement>('.site-header'); if (hdr) { hdr.style.opacity = '1'; hdr.style.transform = 'none'; }
+        const cv = document.querySelector<HTMLElement>('.hero-curtain'); if (cv) cv.style.display = 'none';
         return;
       }
-      const tl = gsap.timeline({ delay: 0.2 });
-      tl.to('.hero__label', { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' });
-      tl.to('.hero__title .word', { y: '0%', duration: 1.0, stagger: 0.1, ease: 'power4.out' }, '-=0.35');
+
+      // Hide nav & CTA behind the curtain so they reveal with the animation
+      gsap.set('.site-header', { opacity: 0, y: -18 });
+      gsap.set('.hero__cta',   { opacity: 0, y: 12  });
+
+      const tl = gsap.timeline({ delay: 0.05 });
+
+      // 1. Projector-start flash
+      tl.to('.hero-flash', { opacity: 0.13, duration: 0.06, ease: 'none' })
+        .to('.hero-flash', { opacity: 0,    duration: 0.22, ease: 'power1.out' });
+
+      // 2. Curtain rips open (slow start → explosive finish)
+      tl.to('.hero-curtain__top', { y: '-101%', duration: 0.68, ease: 'expo.in' }, 0.03);
+      tl.to('.hero-curtain__bot', { y: '101%',  duration: 0.68, ease: 'expo.in' }, 0.03);
+
+      // 3. Words slam in from above while curtain is still tearing
+      tl.fromTo('.hero__title .word',
+        { y: -58, scale: 1.14, opacity: 0 },
+        { y: 0, scale: 1, opacity: 1, duration: 0.52, stagger: 0.07, ease: 'expo.out' },
+        0.42
+      );
+
+      // 4. Nav drops down
+      tl.to('.site-header', { opacity: 1, y: 0, duration: 0.42, ease: 'power2.out' }, 0.52);
+
+      // 5. Label
+      tl.to('.hero__label', { opacity: 1, y: 0, duration: 0.42, ease: 'power2.out' }, 0.78);
+
+      // 6. CTA
+      tl.to('.hero__cta', { opacity: 1, y: 0, duration: 0.38, ease: 'power2.out' }, 0.92);
+
+      // 7. Remove curtain from paint after animation
+      tl.set('.hero-curtain', { display: 'none' }, 1.1);
     }
 
     // ── Three.js sphere ──
@@ -190,6 +224,12 @@ export default function Hero() {
 
   return (
     <section id="inicio" className="hero" aria-labelledby="hero-heading">
+      <div className="hero-curtain" aria-hidden="true">
+        <div className="hero-curtain__top" />
+        <div className="hero-curtain__bot" />
+      </div>
+      <div className="hero-flash" aria-hidden="true" />
+
       <canvas ref={canvasRef} id="hero-canvas" className="hero__canvas" aria-hidden="true" />
       <canvas ref={orbitRef} id="hero-orbit" aria-hidden="true" />
 

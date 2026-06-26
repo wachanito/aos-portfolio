@@ -221,6 +221,12 @@ img, video { display: block; max-width: 100%; }
   font-family: var(--ff-body); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
 }
 
+/* ── HERO ENTRANCE CURTAIN ── */
+.hero-curtain { position: fixed; inset: 0; z-index: 999; pointer-events: none; }
+.hero-curtain__top { position: absolute; top: 0; left: 0; right: 0; height: 51%; background: #080706; will-change: transform; }
+.hero-curtain__bot { position: absolute; bottom: 0; left: 0; right: 0; height: 51%; background: #080706; will-change: transform; }
+.hero-flash { position: fixed; inset: 0; z-index: 998; pointer-events: none; background: #e8e4df; opacity: 0; }
+
 /* Compensar header fijo en anclas */
 #inicio, #trabajos, #sobre-mi, #certificaciones, #servicios, #contacto { scroll-margin-top: 64px; }
 
