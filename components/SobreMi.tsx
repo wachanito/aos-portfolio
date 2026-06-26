@@ -1,24 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
 import { qa, skillGroups, skillsExtra } from '@/data/content';
 
 export default function SobreMi() {
-  useEffect(() => {
-    const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
-    const io = new IntersectionObserver(
-      entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-revealed'); io.unobserve(e.target); } }),
-      { threshold: 0.15, rootMargin: '0px 0px -10% 0px' }
-    );
-    items.forEach(el => io.observe(el));
-    const underlines = document.querySelectorAll<HTMLElement>('[data-underline]');
-    const uio = new IntersectionObserver(
-      entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-drawn'); uio.unobserve(e.target); } }),
-      { threshold: 0.4 }
-    );
-    underlines.forEach(el => uio.observe(el));
-    return () => { io.disconnect(); uio.disconnect(); };
-  }, []);
 
   return (
     <section id="sobre-mi" className="sobremi">

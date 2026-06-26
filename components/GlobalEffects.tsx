@@ -59,6 +59,32 @@ export default function GlobalEffects() {
     }
     window.addEventListener('scroll', updateProgress, { passive: true });
     updateProgress();
+
+    // ── Global scroll reveals ──
+    const revealItems = document.querySelectorAll<HTMLElement>('[data-reveal]');
+    const revealIO = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) {
+          const el = e.target as HTMLElement;
+          const delay = el.dataset.revealDelay || '0';
+          el.style.transitionDelay = delay + 'ms';
+          el.classList.add('is-revealed');
+          revealIO.unobserve(el);
+        }
+      }),
+      { threshold: 0.12, rootMargin: '0px 0px -6% 0px' }
+    );
+    revealItems.forEach(el => revealIO.observe(el));
+
+    // ── Global underline draws ──
+    const underlineItems = document.querySelectorAll<HTMLElement>('[data-underline]');
+    const underlineIO = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-drawn'); underlineIO.unobserve(e.target); } }),
+      { threshold: 0.4 }
+    );
+    underlineItems.forEach(el => underlineIO.observe(el));
+
+    return () => { revealIO.disconnect(); underlineIO.disconnect(); };
   }, []);
 
   return null;

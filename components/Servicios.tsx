@@ -34,7 +34,7 @@ export default function Servicios() {
 
         <div className="servicios-list">
           {servicios.map((s, i) => (
-            <div key={i} className={`servicio-row${open === i ? ' is-open' : ''}`}>
+            <div key={i} className={`servicio-row${open === i ? ' is-open' : ''}`} data-reveal data-reveal-delay={String(i * 100)}>
               <button
                 className="servicio-row__head"
                 type="button"

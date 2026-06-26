@@ -15,7 +15,7 @@ export default function Trabajos() {
         </div>
 
         <div className="trabajos-grid">
-          {proyectos.map(p => {
+          {proyectos.map((p, idx) => {
             const board = p.posterUrl || p.mediaUrl || '';
             const isVideo = p.mediaTipo === 'video';
             return (
@@ -23,6 +23,8 @@ export default function Trabajos() {
                 key={p.slug}
                 className="trabajo-card"
                 href={`/proyectos/${p.slug}`}
+                data-reveal
+                data-reveal-delay={String(idx * 80)}
                 {...(isVideo ? { 'data-has-video': '' } : {})}
               >
                 <div className="trabajo-card__top">
