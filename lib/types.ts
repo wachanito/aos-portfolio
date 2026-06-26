@@ -25,5 +25,6 @@ export interface Proyecto {
   galeria?: string[];
   galeria2?: string[];
   esPropuesta?: boolean;
+  enDesarrollo?: boolean;
   password?: string;
 }

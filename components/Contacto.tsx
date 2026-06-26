@@ -2,33 +2,62 @@
 
 import { useState, useRef } from 'react';
 
+type FieldErrors = { nombre?: string; email?: string; mensaje?: string };
+
 export default function Contacto() {
-  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [status,     setStatus]     = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [errors,     setErrors]     = useState<FieldErrors>({});
+  const [touched,    setTouched]    = useState<Record<string, boolean>>({});
   const formRef = useRef<HTMLFormElement>(null);
 
   function handleFocus(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) {
     e.target.closest('.field')?.classList.add('is-active', 'is-focus');
   }
   function handleBlur(e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    const { name, value } = e.target;
     const field = e.target.closest('.field');
     field?.classList.remove('is-focus');
-    if (!e.target.value.trim()) field?.classList.remove('is-active');
+    if (!value.trim()) field?.classList.remove('is-active');
+    setTouched(t => ({ ...t, [name]: true }));
+    setErrors(prev => ({ ...prev, ...validateField(name, value) }));
   }
   function handleInput(e: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>) {
-    const field = e.currentTarget.closest('.field');
-    field?.classList.toggle('is-active', e.currentTarget.value.trim().length > 0);
+    const el = e.currentTarget;
+    const field = el.closest('.field');
+    field?.classList.toggle('is-active', el.value.trim().length > 0);
+    if (touched[el.name]) setErrors(prev => ({ ...prev, ...validateField(el.name, el.value) }));
+  }
+
+  function validateField(name: string, value: string): FieldErrors {
+    if (name === 'nombre') return { nombre: value.trim() ? undefined : 'El nombre es obligatorio' };
+    if (name === 'email')  return { email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim()) ? undefined : 'Ingresa un email válido' };
+    if (name === 'mensaje') return { mensaje: value.trim() ? undefined : 'El mensaje es obligatorio' };
+    return {};
+  }
+
+  function validateAll(form: HTMLFormElement): FieldErrors {
+    const d = new FormData(form);
+    return {
+      nombre:  String(d.get('nombre') ?? '').trim() ? undefined : 'El nombre es obligatorio',
+      email:   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(d.get('email') ?? '').trim()) ? undefined : 'Ingresa un email válido',
+      mensaje: String(d.get('mensaje') ?? '').trim() ? undefined : 'El mensaje es obligatorio',
+    };
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     const form = formRef.current;
     if (!form) return;
+    const allErrors = validateAll(form);
+    setTouched({ nombre: true, email: true, mensaje: true });
+    setErrors(allErrors);
+    if (Object.values(allErrors).some(Boolean)) return;
     const endpoint = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT;
-    if (!endpoint) { setStatus('sent'); setTimeout(() => setStatus('idle'), 2200); return; }
+    if (!endpoint) { setStatus('sent'); form.reset(); setTouched({}); setErrors({}); setTimeout(() => setStatus('idle'), 2200); return; }
     setStatus('sending');
     try {
       const res = await fetch(endpoint, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
-      if (res.ok) { setStatus('sent'); form.reset(); setTimeout(() => setStatus('idle'), 3500); }
+      if (res.ok) { setStatus('sent'); form.reset(); setTouched({}); setErrors({}); setTimeout(() => setStatus('idle'), 3500); }
       else setStatus('error');
     } catch { setStatus('error'); }
   }
@@ -55,17 +84,20 @@ export default function Contacto() {
           <form ref={formRef} className="contacto-form" noValidate onSubmit={handleSubmit}>
             <input type="hidden" name="_subject" value="Nuevo mensaje desde el portfolio de Agustín Oyarzún" />
 
-            <label className="field">
+            <label className={`field${errors.nombre && touched.nombre ? ' has-error' : ''}`}>
               <span className="field__label">Nombre</span>
-              <input className="field__input" type="text" name="nombre" autoComplete="name" required onFocus={handleFocus} onBlur={handleBlur} onInput={handleInput} />
+              <input className="field__input" type="text" name="nombre" autoComplete="name" onFocus={handleFocus} onBlur={handleBlur} onInput={handleInput} />
+              {errors.nombre && touched.nombre && <span className="field__error">{errors.nombre}</span>}
             </label>
-            <label className="field">
+            <label className={`field${errors.email && touched.email ? ' has-error' : ''}`}>
               <span className="field__label">Email</span>
-              <input className="field__input" type="email" name="email" autoComplete="email" required onFocus={handleFocus} onBlur={handleBlur} onInput={handleInput} />
+              <input className="field__input" type="email" name="email" autoComplete="email" onFocus={handleFocus} onBlur={handleBlur} onInput={handleInput} />
+              {errors.email && touched.email && <span className="field__error">{errors.email}</span>}
             </label>
-            <label className="field">
+            <label className={`field${errors.mensaje && touched.mensaje ? ' has-error' : ''}`}>
               <span className="field__label">Mensaje</span>
-              <textarea className="field__input" name="mensaje" rows={3} required onFocus={handleFocus as any} onBlur={handleBlur as any} onInput={handleInput as any} />
+              <textarea className="field__input" name="mensaje" rows={3} onFocus={handleFocus as any} onBlur={handleBlur as any} onInput={handleInput as any} />
+              {errors.mensaje && touched.mensaje && <span className="field__error">{errors.mensaje}</span>}
             </label>
 
             <button type="submit" className={`contacto-submit${status === 'sent' ? ' is-sent' : ''}`} disabled={status === 'sending'}>

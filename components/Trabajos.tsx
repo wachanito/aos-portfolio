@@ -57,6 +57,7 @@ export default function Trabajos() {
                 <div className="trabajo-card__meta">
                   <div className="trabajo-card__name">{p.titulo}</div>
                   <div className={`trabajo-card__role${isVideo ? ' trabajo-card__role--accent' : ''}`}>{p.rol}</div>
+                  {p.enDesarrollo && <span className="trabajo-card__wip">En curso</span>}
                 </div>
               </Link>
             );

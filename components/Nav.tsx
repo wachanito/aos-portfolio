@@ -14,9 +14,10 @@ const links = [
 ];
 
 export default function Nav() {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [active,     setActive]     = useState('');
-  const [dropOpen,   setDropOpen]   = useState(false);
+  const [mobileOpen,     setMobileOpen]     = useState(false);
+  const [active,         setActive]         = useState('');
+  const [dropOpen,       setDropOpen]       = useState(false);
+  const [mobileSubOpen,  setMobileSubOpen]  = useState(false);
   const dropRef = useRef<HTMLLIElement>(null);
 
   useEffect(() => {
@@ -84,7 +85,7 @@ export default function Nav() {
                   </a>
 
                   <div className="nav-dropdown" role="menu">
-                    {proyectos.map(p => (
+                    {proyectos.map((p, i) => (
                       <Link
                         key={p.slug}
                         href={`/proyectos/${p.slug}`}
@@ -92,7 +93,9 @@ export default function Nav() {
                         role="menuitem"
                         onClick={() => setDropOpen(false)}
                       >
-                        {p.titulo}
+                        <span className="nav-dropdown__num">{String(i + 1).padStart(2, '0')}</span>
+                        <span className="nav-dropdown__name">{p.titulo}</span>
+                        {p.enDesarrollo && <span className="nav-dropdown__wip">En curso</span>}
                       </Link>
                     ))}
                   </div>
@@ -117,7 +120,7 @@ export default function Nav() {
           className="nav-toggle"
           aria-controls="mobile-nav"
           aria-expanded={mobileOpen}
-          aria-label="Abrir menú"
+          aria-label={mobileOpen ? 'Cerrar menú' : 'Abrir menú'}
           onClick={() => {
             setMobileOpen(o => {
               const next = !o;
@@ -139,9 +142,37 @@ export default function Nav() {
       >
         <ul>
           {links.map(l => (
-            <li key={l.href}>
-              <a href={l.href} onClick={e => handleAnchor(e, l.href)}>{l.label}</a>
-            </li>
+            l.hasDrop ? (
+              <li key={l.href} className="mobile-nav__has-sub">
+                <button
+                  className={`mobile-nav__sub-toggle${mobileSubOpen ? ' is-open' : ''}`}
+                  onClick={() => setMobileSubOpen(o => !o)}
+                >
+                  {l.label}
+                  <span className="mobile-nav__caret" aria-hidden="true">{mobileSubOpen ? '−' : '+'}</span>
+                </button>
+                {mobileSubOpen && (
+                  <ul className="mobile-nav__sub">
+                    {proyectos.map((p, i) => (
+                      <li key={p.slug}>
+                        <Link
+                          href={`/proyectos/${p.slug}`}
+                          onClick={() => { setMobileOpen(false); setMobileSubOpen(false); document.body.classList.remove('nav-open'); }}
+                        >
+                          <span className="mobile-nav__sub-num">{String(i + 1).padStart(2, '0')}</span>
+                          {p.titulo}
+                          {p.enDesarrollo && <span className="mobile-nav__sub-wip">En curso</span>}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ) : (
+              <li key={l.href}>
+                <a href={l.href} onClick={e => handleAnchor(e, l.href)}>{l.label}</a>
+              </li>
+            )
           ))}
         </ul>
       </div>

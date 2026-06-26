@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import { Proyecto } from '@/lib/types';
 
@@ -10,13 +11,13 @@ interface Props {
   next: Proyecto;
 }
 
-function PasswordGate({ titulo, onUnlock }: { titulo: string; onUnlock: () => void }) {
+function PasswordGate({ titulo, password, onUnlock }: { titulo: string; password: string; onUnlock: () => void }) {
   const [val, setVal] = useState('');
   const [error, setError] = useState(false);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (val === 'Becker123') { onUnlock(); }
+    if (val === password) { onUnlock(); }
     else { setError(true); setTimeout(() => setError(false), 1800); }
   }
 
@@ -49,6 +50,7 @@ function parseMetric(valor: string) {
 }
 
 export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
+  const router = useRouter();
   const [unlocked, setUnlocked] = useState(!p.password);
   const videoRef      = useRef<HTMLVideoElement>(null);
   const mediaRef      = useRef<HTMLDivElement>(null);
@@ -176,24 +178,35 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
     return () => window.removeEventListener('scroll', onScroll);
   }, [unlocked, p.mediaTipo]);
 
-  // Lightbox
+  // Scroll al inicio al cambiar de proyecto
   useEffect(() => {
-    if (!unlocked) return;
-    const box = document.createElement('div'); box.className = 'aos-lightbox';
-    box.innerHTML = '<button class="aos-lightbox__close" aria-label="Cerrar">&times;</button><img class="aos-lightbox__img" src="" alt="">';
-    document.body.appendChild(box);
-    const img = box.querySelector<HTMLImageElement>('.aos-lightbox__img')!;
-    const btn = box.querySelector<HTMLButtonElement>('.aos-lightbox__close')!;
-    function openLb(src: string) { img.src = src; box.classList.add('is-open'); document.body.style.overflow = 'hidden'; }
-    function closeLb() { box.classList.remove('is-open'); document.body.style.overflow = ''; setTimeout(() => { img.src = ''; }, 260); }
-    const imgs = document.querySelectorAll<HTMLImageElement>('.proyecto-gallery__cell img');
-    imgs.forEach(el => el.addEventListener('click', () => openLb(el.src)));
-    btn.addEventListener('click', closeLb);
-    box.addEventListener('click', e => { if (e.target === box) closeLb(); });
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeLb(); };
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [p.slug]);
+
+  const [lbSrcs,  setLbSrcs]  = useState<string[]>([]);
+  const [lbIdx,   setLbIdx]   = useState(0);
+  const [lbTouchX, setLbTouchX] = useState<number | null>(null);
+  const lbOpen = lbSrcs.length > 0;
+
+  function openLightbox(srcs: string[], idx: number) {
+    setLbSrcs(srcs); setLbIdx(idx); document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    setLbSrcs([]); setLbIdx(0); document.body.style.overflow = '';
+  }
+  function lbPrev() { setLbIdx(i => (i - 1 + lbSrcs.length) % lbSrcs.length); }
+  function lbNext() { setLbIdx(i => (i + 1) % lbSrcs.length); }
+
+  useEffect(() => {
+    if (!lbOpen) return;
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape')     closeLightbox();
+      if (e.key === 'ArrowRight') lbNext();
+      if (e.key === 'ArrowLeft')  lbPrev();
+    }
     document.addEventListener('keydown', onKey);
-    return () => { document.body.removeChild(box); document.removeEventListener('keydown', onKey); };
-  }, [unlocked]);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [lbOpen, lbSrcs.length]);
 
   function resetHideTimer() {
     if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
@@ -210,11 +223,18 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
     if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     if (playing) setShowControls(false);
   }
+  function handleTouchStart() { resetHideTimer(); }
   function seek(e: React.MouseEvent<HTMLDivElement>) {
     const v = videoRef.current;
     if (!v || !duration) return;
     const rect = e.currentTarget.getBoundingClientRect();
     v.currentTime = ((e.clientX - rect.left) / rect.width) * duration;
+  }
+  function seekKeyboard(e: React.KeyboardEvent<HTMLDivElement>) {
+    const v = videoRef.current;
+    if (!v || !duration) return;
+    if (e.key === 'ArrowRight') { e.preventDefault(); v.currentTime = Math.min(duration, v.currentTime + 5); }
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); v.currentTime = Math.max(0, v.currentTime - 5); }
   }
   function changeVolume(e: React.ChangeEvent<HTMLInputElement>) {
     const v = videoRef.current;
@@ -236,7 +256,7 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
   const progress = duration ? (currentTime / duration) * 100 : 0;
   const ctrlVis  = showControls || !playing;
 
-  if (!unlocked) return <PasswordGate titulo={p.titulo} onUnlock={handleUnlock} />;
+  if (!unlocked) return <PasswordGate titulo={p.titulo} password={p.password!} onUnlock={handleUnlock} />;
 
   const mainNum = p.tipoClimax === 'numerico' && p.climaxNums?.length ? parseMetric(p.climaxNums[0].valor) : null;
   const extras  = p.climaxNums?.slice(1) ?? [];
@@ -246,7 +266,14 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
     const cols = imgs.length >= 3 ? '3' : imgs.length === 2 ? '2' : '1';
     return (
       <div className={`proyecto-gallery proyecto-gallery--accion proyecto-gallery--${cols}${imgs.length === 1 ? ' proyecto-gallery--solo' : ''} ${extraClass}`}>
-        {imgs.map((url, i) => <div key={i} className="proyecto-gallery__cell"><img src={url} alt="" /></div>)}
+        {imgs.map((url, i) => (
+          <div key={i}>
+            <div className="proyecto-gallery__cell">
+              <img src={url} alt="" loading="lazy" onClick={() => openLightbox(imgs, i)} />
+            </div>
+            <span className="proyecto-gallery__cell__label">Click para agrandar</span>
+          </div>
+        ))}
       </div>
     );
   }
@@ -276,9 +303,9 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
 
   return (
     <article className="proyecto" style={{ '--accent': 'var(--clr-red)' } as React.CSSProperties}>
-      <Link href="/#trabajos" className="proyecto-back">
-        <span className="arr" aria-hidden="true">&#8592;</span> Volver a trabajos
-      </Link>
+      <button className="proyecto-back" onClick={() => router.back()}>
+        <span className="arr" aria-hidden="true">&#8592;</span> Volver
+      </button>
 
       <div className="proyecto-wrap">
         <header className="proyecto-header">
@@ -296,30 +323,43 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
 
       <div className="proyecto-media-wrap">
         {p.mediaTipo === 'video' ? (
-          <div className={mediaClass} data-media onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
-            <div className="proyecto-media__inner">
-              <video ref={videoRef} loop playsInline preload="metadata"
-                poster={p.posterUrl}
-                src={p.mediaUrl || undefined}
-                onClick={togglePlay}
-                style={{ cursor: 'pointer' }}
-              />
-            </div>
+          <div className={mediaClass} data-media onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} onTouchStart={handleTouchStart}>
+            {p.mediaUrl ? (
+              <>
+                <div className="proyecto-media__inner">
+                  <video ref={videoRef} loop playsInline preload="metadata"
+                    poster={p.posterUrl}
+                    src={p.mediaUrl}
+                    onClick={togglePlay}
+                    style={{ cursor: 'pointer' }}
+                  />
+                </div>
 
-            <button
-              className={`proyecto-play${playing ? ' is-hidden' : ''}`}
-              type="button"
-              aria-label={playing ? 'Pausar' : 'Reproducir'}
-              onClick={togglePlay}
-            >
-              <span className="ring"><i /></span>
-            </button>
+                <button
+                  className={`proyecto-play${playing ? ' is-hidden' : ''}`}
+                  type="button"
+                  aria-label={playing ? 'Pausar' : 'Reproducir'}
+                  onClick={togglePlay}
+                >
+                  <span className="ring"><i /></span>
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="proyecto-media__inner">
+                  {p.posterUrl && <img src={p.posterUrl} alt={p.titulo} style={{ opacity: 0.35 }} />}
+                </div>
+                <div className="proyecto-media__novideo">
+                  <span>Video próximamente</span>
+                </div>
+              </>
+            )}
 
             <span className="proyecto-media__badge proyecto-media__badge--top">
               <span className="tri-right" style={{ borderLeftColor: '#0f0f0f' }} />Video · Videocaso
             </span>
 
-            <div className={`proyecto-vbar${ctrlVis ? ' is-visible' : ''}`}>
+            {p.mediaUrl && <div className={`proyecto-vbar${ctrlVis ? ' is-visible' : ''}`}>
               <button className="proyecto-vbar__pp" type="button" onClick={togglePlay}
                 aria-label={playing ? 'Pausar' : 'Reproducir'}>
                 {playing
@@ -328,8 +368,8 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
                 }
               </button>
 
-              <div className="proyecto-vbar__progress" onClick={seek}
-                role="slider" aria-label="Progreso"
+              <div className="proyecto-vbar__progress" onClick={seek} onKeyDown={seekKeyboard}
+                role="slider" tabIndex={0} aria-label="Progreso"
                 aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)}>
                 <div className="proyecto-vbar__filled" style={{ width: `${progress}%` }} />
               </div>
@@ -351,7 +391,7 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
                 onChange={changeVolume}
                 aria-label="Volumen"
               />
-            </div>
+            </div>}
           </div>
         ) : (
           <div className={mediaClass} data-media ref={mediaRef}>
@@ -413,7 +453,9 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
               <div className={`proyecto-gallery proyecto-gallery--${cols}`}>
                 {p.galeria2!.map((url, i) => (
                   <div key={i}>
-                    <div className="proyecto-gallery__cell"><img src={url} alt="" /></div>
+                    <div className="proyecto-gallery__cell">
+                      <img src={url} alt="" loading="lazy" onClick={() => openLightbox(p.galeria2!, i)} />
+                    </div>
                     <span className="proyecto-gallery__cell__label">Click para agrandar</span>
                   </div>
                 ))}
@@ -434,6 +476,33 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
           <span className="proyecto-pnav__title">{next.titulo}</span>
         </Link>
       </nav>
+
+      {/* Lightbox */}
+      {lbOpen && (
+        <div
+          className="aos-lightbox is-open"
+          onClick={e => { if (e.target === e.currentTarget) closeLightbox(); }}
+          onTouchStart={e => setLbTouchX(e.touches[0].clientX)}
+          onTouchEnd={e => {
+            if (lbTouchX === null) return;
+            const dx = lbTouchX - e.changedTouches[0].clientX;
+            if (Math.abs(dx) > 40) dx > 0 ? lbNext() : lbPrev();
+            setLbTouchX(null);
+          }}
+        >
+          <button className="aos-lightbox__close" aria-label="Cerrar" onClick={closeLightbox}>&times;</button>
+          {lbSrcs.length > 1 && (
+            <button className="aos-lightbox__nav aos-lightbox__nav--prev" aria-label="Anterior" onClick={e => { e.stopPropagation(); lbPrev(); }}>&#8592;</button>
+          )}
+          <img className="aos-lightbox__img" src={lbSrcs[lbIdx]} alt="" />
+          {lbSrcs.length > 1 && (
+            <button className="aos-lightbox__nav aos-lightbox__nav--next" aria-label="Siguiente" onClick={e => { e.stopPropagation(); lbNext(); }}>&#8594;</button>
+          )}
+          {lbSrcs.length > 1 && (
+            <span className="aos-lightbox__counter">{lbIdx + 1} / {lbSrcs.length}</span>
+          )}
+        </div>
+      )}
     </article>
   );
 }

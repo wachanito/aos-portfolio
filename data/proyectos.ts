@@ -141,6 +141,7 @@ export const proyectos: Proyecto[] = [
     mediaTipo: 'imagen',
     mediaUrl: '/uploads/colo-colo-portada.png',
     posterUrl: '/uploads/colo-colo-portada.png',
+    enDesarrollo: true,
   },
 ];
 

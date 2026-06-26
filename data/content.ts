@@ -64,6 +64,6 @@ export const servicios = [
   },
   {
     nombre: 'Analytics & Data',
-    desc: 'Medición e interpretación de datos para tomar decisiones. Convierto métricas en acciones que mueven la aguja.',
+    desc: 'Medición e interpretación de datos para tomar decisiones. Convierto métricas en acciones concretas con impacto real.',
   },
 ];
