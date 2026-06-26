@@ -38,6 +38,7 @@ export const proyectos: Proyecto[] = [
     climaxSublabel: 'Estrategia de marca · Beauty F × Gen Z · Caso Effie',
     mediaTipo: 'video',
     mediaUrl: '/uploads/beautyf-subt.mp4',
+    vimeoId: '1204881022',
     posterUrl: '/uploads/beautyf-portada.png',
     galeria: ['/uploads/beautyf-accion.png'],
     galeria2: [

@@ -340,8 +340,17 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
 
       <div className="proyecto-media-wrap">
         {p.mediaTipo === 'video' ? (
-          <div className={mediaClass} data-media onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} onTouchStart={handleTouchStart}>
-            {p.mediaUrl ? (
+          <div className={`${mediaClass}${p.vimeoId ? ' proyecto-media--vimeo' : ''}`} data-media onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} onTouchStart={handleTouchStart}>
+            {p.vimeoId ? (
+              <iframe
+                src={`https://player.vimeo.com/video/${p.vimeoId}?badge=0&autopause=0&player_id=0&app_id=58479`}
+                frameBorder={0}
+                allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
+                referrerPolicy="strict-origin-when-cross-origin"
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
+                title={p.titulo}
+              />
+            ) : p.mediaUrl ? (
               <>
                 <div className="proyecto-media__inner">
                   <video ref={videoRef} loop playsInline preload="metadata"
@@ -386,7 +395,7 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
               <span className="tri-right" style={{ borderLeftColor: '#0f0f0f' }} />Video · Videocaso
             </span>
 
-            {p.mediaUrl && <div className={`proyecto-vbar${ctrlVis ? ' is-visible' : ''}`}>
+            {!p.vimeoId && p.mediaUrl && <div className={`proyecto-vbar${ctrlVis ? ' is-visible' : ''}`}>
               <button className="proyecto-vbar__pp" type="button" onClick={togglePlay}
                 aria-label={playing ? 'Pausar' : 'Reproducir'}>
                 {playing

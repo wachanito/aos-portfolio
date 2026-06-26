@@ -20,6 +20,7 @@ export interface Proyecto {
   climaxSublabel?: string;
   mediaTipo: 'imagen' | 'video';
   mediaUrl?: string;
+  vimeoId?: string;
   posterUrl?: string;
   boardUrl?: string;
   boardFit?: 'cover' | 'contain';
