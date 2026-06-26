@@ -25,7 +25,6 @@ export default function Servicios() {
     <section id="servicios" className="servicios">
       <div className="aos-section">
         <div className="servicios__head">
-          <span className="aos-eyebrow"><span className="aos-eyebrow__dot" />Qué hago</span>
           <div className="aos-section-head">
             <h2 className="aos-title">Servic<span className="accent">ios.</span></h2>
             <span className="aos-underline" data-underline />

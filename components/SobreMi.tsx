@@ -8,7 +8,7 @@ export default function SobreMi() {
     <section id="sobre-mi" className="sobremi">
       <div className="aos-section">
         <div className="sobremi__head">
-          <span className="aos-eyebrow"><span className="aos-eyebrow__dot" />Quién soy</span>
+          <span className="aos-eyebrow"><span className="aos-eyebrow__dot" />Agustín Oyarzún</span>
           <div className="aos-section-head">
             <h2 className="aos-title">Sobre <span className="accent">Mí.</span></h2>
             <span className="aos-underline" data-underline />
