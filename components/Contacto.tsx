@@ -68,7 +68,6 @@ export default function Contacto() {
     <section id="contacto" className="contacto">
       <div className="aos-section">
         <div className="contacto__head">
-          <span className="aos-eyebrow"><span className="aos-eyebrow__dot" />Hablemos</span>
           <div className="aos-section-head">
             <h2 className="aos-title">Hablem<span className="accent">os.</span></h2>
             <span className="aos-underline" data-underline />

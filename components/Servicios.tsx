@@ -52,22 +52,6 @@ export default function Servicios() {
             </div>
           ))}
         </div>
-        <div className="servicios-cta">
-          <a
-            href="#contacto"
-            className="servicios-cta__link"
-            onClick={e => {
-              e.preventDefault();
-              const el = document.getElementById('contacto');
-              if (!el) return;
-              if ((window as any).lenis) (window as any).lenis.scrollTo(el, { offset: -64 });
-              else el.scrollIntoView({ behavior: 'smooth' });
-            }}
-          >
-            <span>Hablemos</span>
-            <span className="arr" aria-hidden="true">&#8594;</span>
-          </a>
-        </div>
       </div>
     </section>
   );
