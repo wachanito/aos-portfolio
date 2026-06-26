@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import { proyectos } from '@/data/proyectos';
 
 const links = [
   { href: '#inicio',         label: 'Inicio' },
-  { href: '#trabajos',       label: 'Trabajos' },
+  { href: '#trabajos',       label: 'Trabajos', hasDrop: true },
   { href: '#sobre-mi',       label: 'Sobre mí' },
   { href: '#certificaciones',label: 'Credenciales' },
   { href: '#servicios',      label: 'Servicios' },
@@ -14,7 +15,9 @@ const links = [
 
 export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [active, setActive] = useState('');
+  const [active,     setActive]     = useState('');
+  const [dropOpen,   setDropOpen]   = useState(false);
+  const dropRef = useRef<HTMLLIElement>(null);
 
   useEffect(() => {
     const sections = links.map(l => document.getElementById(l.href.slice(1))).filter(Boolean) as HTMLElement[];
@@ -28,9 +31,21 @@ export default function Nav() {
     return () => io.disconnect();
   }, []);
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    function onPointerDown(e: PointerEvent) {
+      if (dropRef.current && !dropRef.current.contains(e.target as Node)) {
+        setDropOpen(false);
+      }
+    }
+    document.addEventListener('pointerdown', onPointerDown);
+    return () => document.removeEventListener('pointerdown', onPointerDown);
+  }, []);
+
   function handleAnchor(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
     e.preventDefault();
     setMobileOpen(false);
+    setDropOpen(false);
     document.body.classList.remove('nav-open');
     const el = document.getElementById(href.slice(1));
     if (!el) return;
@@ -51,16 +66,51 @@ export default function Nav() {
         <nav className="site-nav" aria-label="Navegación principal">
           <ul className="site-nav__list">
             {links.map(l => (
-              <li key={l.href}>
-                <a
-                  href={l.href}
-                  className={active === l.href ? 'is-active' : ''}
-                  onClick={e => handleAnchor(e, l.href)}
-                  data-glitch
+              l.hasDrop ? (
+                <li
+                  key={l.href}
+                  ref={dropRef}
+                  className={`nav-item--drop${dropOpen ? ' is-open' : ''}`}
+                  onMouseEnter={() => setDropOpen(true)}
+                  onMouseLeave={() => setDropOpen(false)}
                 >
-                  {l.label}
-                </a>
-              </li>
+                  <a
+                    href={l.href}
+                    className={active === l.href ? 'is-active' : ''}
+                    onClick={e => handleAnchor(e, l.href)}
+                    data-glitch
+                  >
+                    {l.label}
+                  </a>
+
+                  <div className="nav-dropdown" role="menu">
+                    {proyectos.map(p => (
+                      <Link
+                        key={p.slug}
+                        href={`/proyectos/${p.slug}`}
+                        className="nav-dropdown__item"
+                        role="menuitem"
+                        onClick={() => setDropOpen(false)}
+                      >
+                        <span className="nav-dropdown__num">{p.numero}</span>
+                        <span className="nav-dropdown__title">{p.titulo}</span>
+                        <span className="nav-dropdown__role">{p.rol}</span>
+                      </Link>
+                    ))}
+                  </div>
+                </li>
+              ) : (
+                <li key={l.href}>
+                  <a
+                    href={l.href}
+                    className={active === l.href ? 'is-active' : ''}
+                    onClick={e => handleAnchor(e, l.href)}
+                    data-glitch
+                  >
+                    {l.label}
+                  </a>
+                </li>
+              )
             ))}
           </ul>
         </nav>
