@@ -31,8 +31,14 @@ export default function Nav() {
   function handleAnchor(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
     e.preventDefault();
     setMobileOpen(false);
+    document.body.classList.remove('nav-open');
     const el = document.getElementById(href.slice(1));
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    if (!el) return;
+    if ((window as any).lenis) {
+      (window as any).lenis.scrollTo(el, { offset: -64 });
+    } else {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 
   return (
@@ -63,7 +69,13 @@ export default function Nav() {
           aria-controls="mobile-nav"
           aria-expanded={mobileOpen}
           aria-label="Abrir menú"
-          onClick={() => setMobileOpen(o => !o)}
+          onClick={() => {
+            setMobileOpen(o => {
+              const next = !o;
+              document.body.classList.toggle('nav-open', next);
+              return next;
+            });
+          }}
         >
           <span className="nav-toggle__bar" />
           <span className="nav-toggle__bar" />
