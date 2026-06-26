@@ -82,6 +82,7 @@ export default function Nav() {
                     data-glitch
                   >
                     {l.label}
+                    <span className="nav-drop-caret" aria-hidden="true" />
                   </a>
 
                   <div className="nav-dropdown" role="menu">
