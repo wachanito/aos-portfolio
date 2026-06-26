@@ -12,7 +12,7 @@ export const qa = [
     a: 'Con datos primero, intuición después. Nunca al revés. Antes de proponer cualquier cosa, analizo los indicadores clave: alcance, apertura, conversión. La creatividad entra cuando ya sé qué tiene que resolver.',
   },
   {
-    q: '¿Por dónde me ubico?',
+    q: '¿Dónde me ubico?',
     a: 'Santiago, Chile. Curso publicidad en la UDP, desarrollo proyectos con marcas reales y busco la primera organización en la que pueda generar impacto desde el primer día. Si llegaste hasta aquí, probablemente seas tú.',
   },
 ];
