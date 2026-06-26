@@ -77,11 +77,9 @@ export default function Nav() {
                 >
                   <a
                     href={l.href}
-                    className={active === l.href ? 'is-active' : ''}
                     onClick={e => handleAnchor(e, l.href)}
-                    data-glitch
                   >
-                    {l.label}
+                    <span data-glitch>{l.label}</span>
                     <span className="nav-drop-caret" aria-hidden="true" />
                   </a>
 

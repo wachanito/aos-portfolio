@@ -122,14 +122,14 @@ img, video { display: block; max-width: 100%; }
 }
 .nav-item--drop { position: relative; }
 .nav-drop-caret {
-  display: inline-block; width: 8px; height: 8px; margin-left: 5px;
-  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  display: inline-block; width: 5px; height: 5px; margin-left: 4px;
+  border-right: 1.5px solid var(--clr-text); border-bottom: 1.5px solid var(--clr-text);
   transform: translateY(-2px) rotate(45deg);
   transition: transform .22s ease;
-  vertical-align: middle;
+  vertical-align: middle; opacity: 0.6;
 }
 .nav-item--drop.is-open .nav-drop-caret {
-  transform: translateY(2px) rotate(-135deg);
+  transform: translateY(1px) rotate(-135deg);
 }
 .nav-dropdown {
   position: absolute; top: 100%; left: 50%;
