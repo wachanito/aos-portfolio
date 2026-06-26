@@ -138,14 +138,14 @@ export default function Hero() {
         if (orbit) { orbit.width = orbit.clientWidth; orbit.height = orbit.clientHeight; }
       }
       resize();
-      window.addEventListener('resize', resize);
+      window.addEventListener('resize', resize, { passive: true });
 
       let rawX = window.innerWidth / 2, rawY = window.innerHeight / 2;
       let mx = 0, my = 0, tx = 0, ty = 0, autoAngle = 0;
       let currentSpeed = 0.0035, targetSpeed = 0.0035;
       const scales = new Array(10).fill(1);
       function onMouseMove(e: MouseEvent) { rawX = e.clientX; rawY = e.clientY; tx = (e.clientX / window.innerWidth - 0.5) * 2; ty = (e.clientY / window.innerHeight - 0.5) * 2; }
-      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('mousemove', onMouseMove, { passive: true });
 
       const ctx = orbit ? orbit.getContext('2d') : null;
       let animId: number;

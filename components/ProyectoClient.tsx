@@ -286,7 +286,7 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
         {imgs.map((url, i) => (
           <div key={i}>
             <div className="proyecto-gallery__cell">
-              <img src={url} alt="" loading="lazy" onClick={() => openLightbox(imgs, i)} />
+              <img src={url} alt="" loading="lazy" decoding="async" onClick={() => openLightbox(imgs, i)} />
             </div>
             <span className="proyecto-gallery__cell__label">Click para agrandar</span>
           </div>
@@ -432,7 +432,7 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
         ) : (
           <div className={mediaClass} data-media ref={mediaRef}>
             <div className="proyecto-media__inner" data-media-inner>
-              {p.mediaUrl ? <img src={p.mediaUrl} alt={p.titulo} /> : null}
+              {p.mediaUrl ? <img src={p.mediaUrl} alt={p.titulo} decoding="async" /> : null}
             </div>
             <span className="proyecto-media__badge">Media de apertura · Board</span>
           </div>

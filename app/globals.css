@@ -230,6 +230,12 @@ img, video { display: block; max-width: 100%; }
 /* Compensar header fijo en anclas */
 #inicio, #trabajos, #sobre-mi, #certificaciones, #servicios, #contacto { scroll-margin-top: 64px; }
 
+/* Skip rendering off-screen sections until near viewport */
+#sobre-mi, #certificaciones, #servicios, #contacto {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 700px;
+}
+
 /* ── Section generic ── */
 .aos-section { max-width: 1280px; margin: 0 auto; padding: 120px 48px 160px; }
 .aos-eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; }
@@ -281,7 +287,7 @@ img, video { display: block; max-width: 100%; }
   .trabajo-card:hover .trabajo-card__index { color: var(--accent); }
   .trabajo-card:hover .trabajo-card__arrow { transform: translate(6px, -6px); }
   .trabajo-card:hover .trabajo-card__board { transform: scale(1.08); }
-  .trabajo-card[data-has-video]:hover .trabajo-card__board--striped { animation: aos-drift 1.1s linear infinite; }
+  .trabajo-card[data-has-video]:hover .trabajo-card__board--striped { animation: none; }
   .trabajo-card:hover .trabajo-card__playhint { opacity: 0; }
   .trabajo-card[data-has-video]:hover .trabajo-card__playhead { animation: aos-playhead 6s linear infinite; }
 }

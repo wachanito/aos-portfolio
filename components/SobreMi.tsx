@@ -18,7 +18,7 @@ export default function SobreMi() {
         <div className="sobremi-layout">
           <div className="sobremi-photo-col">
             <div className="sobremi-photo" data-photo>
-              <img src="/img/foto-agustin.jpg" alt="Agustín Oyarzún" loading="lazy" onError={(e) => { (e.target as HTMLImageElement).style.opacity = '0'; }} />
+              <img src="/img/foto-agustin.webp" alt="Agustín Oyarzún" loading="lazy" onError={(e) => { (e.target as HTMLImageElement).style.opacity = '0'; }} />
               <span className="sobremi-photo__badge">Agustín O.</span>
             </div>
           </div>
