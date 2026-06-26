@@ -21,6 +21,7 @@ export interface Proyecto {
   mediaTipo: 'imagen' | 'video';
   mediaUrl?: string;
   posterUrl?: string;
+  boardUrl?: string;
   boardFit?: 'cover' | 'contain';
   galeria?: string[];
   galeria2?: string[];

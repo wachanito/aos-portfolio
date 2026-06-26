@@ -40,6 +40,8 @@ export const proyectos: Proyecto[] = [
     mediaTipo: 'video',
     mediaUrl: '/uploads/beautyf-subt.mp4',
     posterUrl: '/uploads/beautyf-portada.png',
+    boardUrl: '/uploads/beautyf-board.png',
+    boardFit: 'contain',
     galeria: ['/uploads/beautyf-accion.png'],
     galeria2: [
       '/uploads/beautyf-galeria-1.png',
@@ -124,6 +126,7 @@ export const proyectos: Proyecto[] = [
     mediaTipo: 'video',
     mediaUrl: '',
     posterUrl: '/uploads/becker-portada.png',
+    boardFit: 'contain',
     esPropuesta: true,
     password: 'Becker123',
   },

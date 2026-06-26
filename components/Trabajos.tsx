@@ -16,7 +16,7 @@ export default function Trabajos() {
 
         <div className="trabajos-grid">
           {proyectos.map((p, idx) => {
-            const board = p.posterUrl || p.mediaUrl || '';
+            const board = p.boardUrl || p.posterUrl || p.mediaUrl || '';
             const isVideo = p.mediaTipo === 'video';
             return (
               <Link
