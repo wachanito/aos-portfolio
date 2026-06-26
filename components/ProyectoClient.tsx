@@ -64,6 +64,8 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
   const [volume,       setVolume]       = useState(1);
   const [muted,        setMuted]        = useState(false);
   const [showControls, setShowControls] = useState(true);
+  const [buffering,    setBuffering]    = useState(false);
+  const [videoError,   setVideoError]   = useState(false);
 
   // Check localStorage for saved unlock
   useEffect(() => {
@@ -139,22 +141,31 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
     if (!unlocked || p.mediaTipo !== 'video') return;
     const v = videoRef.current;
     if (!v) return;
-    function onPlay()  { setPlaying(true); }
-    function onPause() { setPlaying(false); setShowControls(true); }
-    function onTime()  { setCurrentTime(v!.currentTime); }
-    function onDur()   { if (isFinite(v!.duration)) setDuration(v!.duration); }
-    function onVol()   { setVolume(v!.volume); setMuted(v!.muted); }
+    function onPlay()    { setPlaying(true); setBuffering(false); }
+    function onPause()   { setPlaying(false); setShowControls(true); }
+    function onTime()    { setCurrentTime(v!.currentTime); }
+    function onDur()     { if (isFinite(v!.duration)) setDuration(v!.duration); }
+    function onVol()     { setVolume(v!.volume); setMuted(v!.muted); }
+    function onWaiting() { setBuffering(true); }
+    function onCanPlay() { setBuffering(false); }
+    function onError()   { setVideoError(true); setBuffering(false); setPlaying(false); }
     v.addEventListener('play',           onPlay);
     v.addEventListener('pause',          onPause);
     v.addEventListener('timeupdate',     onTime);
     v.addEventListener('durationchange', onDur);
     v.addEventListener('volumechange',   onVol);
+    v.addEventListener('waiting',        onWaiting);
+    v.addEventListener('canplay',        onCanPlay);
+    v.addEventListener('error',          onError);
     return () => {
       v.removeEventListener('play',           onPlay);
       v.removeEventListener('pause',          onPause);
       v.removeEventListener('timeupdate',     onTime);
       v.removeEventListener('durationchange', onDur);
       v.removeEventListener('volumechange',   onVol);
+      v.removeEventListener('waiting',        onWaiting);
+      v.removeEventListener('canplay',        onCanPlay);
+      v.removeEventListener('error',          onError);
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
     };
   }, [unlocked, p.mediaTipo]);
@@ -216,7 +227,13 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
   function togglePlay() {
     const v = videoRef.current;
     if (!v) return;
-    if (v.paused) { v.play(); resetHideTimer(); } else { v.pause(); }
+    if (v.paused) {
+      setBuffering(true);
+      v.play().then(() => setBuffering(false)).catch(() => setBuffering(false));
+      resetHideTimer();
+    } else {
+      v.pause();
+    }
   }
   function handleMouseMove() { if (playing) resetHideTimer(); }
   function handleMouseLeave() {
@@ -335,8 +352,18 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
                   />
                 </div>
 
+                {videoError && (
+                  <div className="proyecto-media__error">
+                    <span>No se pudo cargar el video</span>
+                  </div>
+                )}
+
+                {buffering && !videoError && (
+                  <div className="proyecto-media__buffering" aria-label="Cargando..." />
+                )}
+
                 <button
-                  className={`proyecto-play${playing ? ' is-hidden' : ''}`}
+                  className={`proyecto-play${(playing || buffering) ? ' is-hidden' : ''}`}
                   type="button"
                   aria-label={playing ? 'Pausar' : 'Reproducir'}
                   onClick={togglePlay}
