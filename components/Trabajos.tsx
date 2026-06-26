@@ -43,6 +43,9 @@ export default function Trabajos() {
                     style={board ? { backgroundImage: `url('${board}')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' } : undefined}
                   >
                     {!board && <span>{isVideo ? 'Videocaso' : 'Board · miniatura'}</span>}
+                    {p.enDesarrollo && (
+                      <span className="trabajo-card__wip-stamp" aria-hidden="true">EN PROGRESO</span>
+                    )}
                   </div>
                   {isVideo && (
                     <>

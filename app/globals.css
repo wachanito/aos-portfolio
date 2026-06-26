@@ -262,6 +262,13 @@ img, video { display: block; max-width: 100%; }
 .trabajo-card__role { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.7; }
 .trabajo-card__role--accent { color: var(--accent); opacity: 0.85; }
 .trabajo-card__wip { display: inline-block; margin-top: 8px; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; border: 1px solid var(--clr-red); color: var(--clr-red); padding: 3px 7px; line-height: 1; }
+.trabajo-card__wip-stamp {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-12deg);
+  font-family: var(--ff-title); font-size: clamp(11px, 2vw, 15px); letter-spacing: 0.18em;
+  color: var(--clr-red); border: 2px solid var(--clr-red); padding: 6px 14px; line-height: 1;
+  white-space: nowrap; pointer-events: none; z-index: 2;
+  background: rgba(0,0,0,0.45);
+}
 @media (hover: hover) { .trabajo-card:hover .trabajo-card__wip { border-color: var(--clr-red); color: var(--clr-red); } }
 @media (hover: hover) {
   .trabajo-card:hover { background: var(--clr-text); color: var(--clr-bg); transform: translateY(-5px); box-shadow: 0 16px 48px rgba(0,0,0,.5); z-index: 1; }

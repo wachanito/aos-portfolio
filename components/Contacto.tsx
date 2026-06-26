@@ -106,7 +106,7 @@ export default function Contacto() {
           </form>
 
           <div className="contacto-aside">
-            <a className="contacto-wa" href="https://wa.me/56964939070" target="_blank" rel="noopener">
+            <a className="contacto-wa" href="https://wa.me/56964939070" target="_blank" rel="noopener noreferrer">
               <span style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <span className="contacto-wa__k">WhatsApp directo</span>
                 <span className="contacto-wa__v">Escríbeme por WhatsApp</span>
@@ -122,10 +122,10 @@ export default function Contacto() {
             </div>
 
             <div className="contacto-social">
-              <a href="https://www.linkedin.com/in/agust%C3%ADn-oyarz%C3%BAn-4452b82a8/" target="_blank" rel="noopener">
+              <a href="https://www.linkedin.com/in/agust%C3%ADn-oyarz%C3%BAn-4452b82a8/" target="_blank" rel="noopener noreferrer">
                 <span>LinkedIn</span><span aria-hidden="true">&#8599;</span>
               </a>
-              <a href="https://www.behance.net/agustnoyarzun" target="_blank" rel="noopener">
+              <a href="https://www.behance.net/agustnoyarzun" target="_blank" rel="noopener noreferrer">
                 <span>Behance</span><span aria-hidden="true">&#8599;</span>
               </a>
             </div>

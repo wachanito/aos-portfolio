@@ -18,7 +18,7 @@ export default function Certificaciones() {
             if ((c as any).soon)  cls += ' cert-card--soon';
             else if (c.ongoing)   cls += ' cert-card--ongoing';
             return (
-              <div key={i} className={cls}>
+              <div key={c.name} className={cls}>
                 <div className="cert-card__logo">
                   <span className="cert-card__abbr">{c.abbr}</span>
                 </div>

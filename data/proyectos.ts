@@ -142,6 +142,7 @@ export const proyectos: Proyecto[] = [
     mediaUrl: '/uploads/colo-colo-portada.png',
     posterUrl: '/uploads/colo-colo-portada.png',
     enDesarrollo: true,
+    password: 'colo123',
   },
 ];
 
