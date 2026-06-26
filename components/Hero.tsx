@@ -198,10 +198,14 @@ export default function Hero() {
         </p>
 
         <h1 id="hero-heading" className="hero__title" aria-label="Convierto data en audiencia">
-          <span className="word-clip" aria-hidden="true"><span className="word">CONVIERTO</span></span>
-          <span className="word-clip" aria-hidden="true"><span className="word word--accent">DATA</span></span>
-          <span className="word-clip" aria-hidden="true"><span className="word">EN</span></span>
-          <span className="word-clip" aria-hidden="true"><span className="word">AUDIENCIA</span></span>
+          <span className="title-line" aria-hidden="true">
+            <span className="word-clip"><span className="word">CONVIERTO</span></span>
+            <span className="word-clip"><span className="word word--accent">DATA</span></span>
+          </span>
+          <span className="title-line" aria-hidden="true">
+            <span className="word-clip"><span className="word">EN</span></span>
+            <span className="word-clip"><span className="word">AUDIENCIA</span></span>
+          </span>
         </h1>
 
         <a href="#trabajos" className="hero__cta"
