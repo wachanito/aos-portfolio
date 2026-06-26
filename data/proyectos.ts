@@ -15,7 +15,7 @@ export const proyectos: Proyecto[] = [
     climaxNums: [{ valor: '+300%', label: 'Cuentas alcanzadas · Primeros 3 meses' }],
     mediaTipo: 'imagen',
     mediaUrl: '/uploads/remax-board.png',
-    posterUrl: '/uploads/remax-miniatura.png',
+    posterUrl: '/uploads/remax-portada.png',
     boardFit: 'contain',
     galeria2: [
       '/uploads/remax-galeria-1.png',
@@ -39,7 +39,7 @@ export const proyectos: Proyecto[] = [
     climaxSublabel: 'Estrategia de marca · Beauty F × Gen Z · Caso Effie',
     mediaTipo: 'video',
     mediaUrl: '/uploads/beautyf-subt.mp4',
-    posterUrl: '/uploads/beautyf-miniatura.png',
+    posterUrl: '/uploads/beautyf-portada.png',
     galeria: ['/uploads/beautyf-accion.png'],
     galeria2: [
       '/uploads/beautyf-galeria-1.png',
@@ -66,8 +66,8 @@ export const proyectos: Proyecto[] = [
     ],
     climaxSublabel: 'Museo de la Publicidad · Biblioteca Nicanor Parra UDP · 2 semanas',
     mediaTipo: 'imagen',
-    mediaUrl: '/uploads/museo-miniatura.png',
-    posterUrl: '/uploads/museo-miniatura.png',
+    mediaUrl: '/uploads/museo-board.png',
+    posterUrl: '/uploads/museo-portada.png',
     galeria: ['/uploads/museo-flyer.jpg'],
     galeria2: [
       '/uploads/museo-1.jpg',
@@ -93,8 +93,8 @@ export const proyectos: Proyecto[] = [
       { valor: '86%', label: 'Engagement rate' },
     ],
     mediaTipo: 'imagen',
-    mediaUrl: '/uploads/suplestore-miniatura.png',
-    posterUrl: '/uploads/suplestore-miniatura.png',
+    mediaUrl: '/uploads/suple-board.png',
+    posterUrl: '/uploads/suplestore-portada.png',
     galeria: [
       '/uploads/anuncio-activacion.jpg',
       '/uploads/sorte-shaker.jpg',
@@ -121,7 +121,7 @@ export const proyectos: Proyecto[] = [
     climaxSublabel: 'Misión cumplida · Becker le devuelve el gato a Chile · Concurso CREA',
     mediaTipo: 'video',
     mediaUrl: '',
-    posterUrl: '/uploads/becker-miniatura.png',
+    posterUrl: '/uploads/becker-portada.png',
     esPropuesta: true,
     password: 'Becker123',
   },
