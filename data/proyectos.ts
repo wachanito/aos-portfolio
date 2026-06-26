@@ -16,7 +16,6 @@ export const proyectos: Proyecto[] = [
     mediaTipo: 'imagen',
     mediaUrl: '/uploads/remax-board.png',
     posterUrl: '/uploads/remax-portada.png',
-    boardFit: 'contain',
     galeria2: [
       '/uploads/remax-galeria-1.png',
       '/uploads/remax-galeria-2.png',
@@ -40,8 +39,6 @@ export const proyectos: Proyecto[] = [
     mediaTipo: 'video',
     mediaUrl: '/uploads/beautyf-subt.mp4',
     posterUrl: '/uploads/beautyf-portada.png',
-    boardUrl: '/uploads/beautyf-board.png',
-    boardFit: 'contain',
     galeria: ['/uploads/beautyf-accion.png'],
     galeria2: [
       '/uploads/beautyf-galeria-1.png',
@@ -70,7 +67,6 @@ export const proyectos: Proyecto[] = [
     mediaTipo: 'imagen',
     mediaUrl: '/uploads/museo-board.png',
     posterUrl: '/uploads/museo-portada.png',
-    boardFit: 'contain',
     galeria: ['/uploads/museo-flyer.jpg'],
     galeria2: [
       '/uploads/museo-1.jpg',
@@ -98,7 +94,6 @@ export const proyectos: Proyecto[] = [
     mediaTipo: 'imagen',
     mediaUrl: '/uploads/suple-board.png',
     posterUrl: '/uploads/suplestore-portada.png',
-    boardFit: 'contain',
     galeria: [
       '/uploads/anuncio-activacion.jpg',
       '/uploads/sorte-shaker.jpg',
@@ -126,7 +121,6 @@ export const proyectos: Proyecto[] = [
     mediaTipo: 'video',
     mediaUrl: '',
     posterUrl: '/uploads/becker-portada.png',
-    boardFit: 'contain',
     esPropuesta: true,
     password: 'Becker123',
   },
