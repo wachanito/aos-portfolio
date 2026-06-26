@@ -60,6 +60,47 @@ export default function GlobalEffects() {
     window.addEventListener('scroll', updateProgress, { passive: true });
     updateProgress();
 
+    // ── Glitch / scramble on hover ──
+    const glitchChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@!';
+    if (!COARSE) {
+      document.querySelectorAll<HTMLElement>('[data-glitch]').forEach(el => {
+        const original = el.textContent || '';
+        let timer: ReturnType<typeof setInterval>;
+        el.addEventListener('mouseenter', () => {
+          let iter = 0;
+          clearInterval(timer);
+          timer = setInterval(() => {
+            el.textContent = original.split('').map((c, i) => {
+              if (c === ' ') return ' ';
+              if (i < iter) return original[i];
+              return glitchChars[Math.floor(Math.random() * glitchChars.length)];
+            }).join('');
+            iter += 0.55;
+            if (iter >= original.length) { clearInterval(timer); el.textContent = original; }
+          }, 38);
+        });
+        el.addEventListener('mouseleave', () => { clearInterval(timer); el.textContent = original; });
+      });
+    }
+
+    // ── Scramble helper (para preguntas de Sobre Mí) ──
+    function scramble(el: HTMLElement) {
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@!¿?';
+      const original = el.dataset.final || el.textContent || '';
+      el.dataset.final = original;
+      let iter = 0;
+      clearInterval((el as any)._t);
+      (el as any)._t = setInterval(() => {
+        el.textContent = original.split('').map((c, i) => {
+          if (c === ' ') return ' ';
+          if (i < iter) return original[i];
+          return chars[Math.floor(Math.random() * chars.length)];
+        }).join('');
+        iter += 0.9;
+        if (iter >= original.length) { clearInterval((el as any)._t); el.textContent = original; }
+      }, 34);
+    }
+
     // ── Global scroll reveals ──
     const revealItems = document.querySelectorAll<HTMLElement>('[data-reveal]');
     const revealIO = new IntersectionObserver(
@@ -69,6 +110,8 @@ export default function GlobalEffects() {
           const delay = el.dataset.revealDelay || '0';
           el.style.transitionDelay = delay + 'ms';
           el.classList.add('is-revealed');
+          const qt = el.querySelector<HTMLElement>('[data-qtext]');
+          if (qt && !COARSE) scramble(qt);
           revealIO.unobserve(el);
         }
       }),

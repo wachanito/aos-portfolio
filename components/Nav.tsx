@@ -56,6 +56,7 @@ export default function Nav() {
                   href={l.href}
                   className={active === l.href ? 'is-active' : ''}
                   onClick={e => handleAnchor(e, l.href)}
+                  data-glitch
                 >
                   {l.label}
                 </a>

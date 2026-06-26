@@ -206,7 +206,13 @@ export default function Hero() {
         </h1>
 
         <a href="#trabajos" className="hero__cta"
-           onClick={e => { e.preventDefault(); document.getElementById('trabajos')?.scrollIntoView({ behavior: 'smooth' }); }}>
+           onClick={e => {
+             e.preventDefault();
+             const el = document.getElementById('trabajos');
+             if (!el) return;
+             if ((window as any).lenis) { (window as any).lenis.scrollTo(el, { offset: -64 }); }
+             else { el.scrollIntoView({ behavior: 'smooth' }); }
+           }}>
           <span>Ver trabajos</span>
           <span aria-hidden="true">↓</span>
         </a>
