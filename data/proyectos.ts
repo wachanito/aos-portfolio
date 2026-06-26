@@ -68,6 +68,7 @@ export const proyectos: Proyecto[] = [
     mediaTipo: 'imagen',
     mediaUrl: '/uploads/museo-board.png',
     posterUrl: '/uploads/museo-portada.png',
+    boardFit: 'contain',
     galeria: ['/uploads/museo-flyer.jpg'],
     galeria2: [
       '/uploads/museo-1.jpg',
@@ -95,6 +96,7 @@ export const proyectos: Proyecto[] = [
     mediaTipo: 'imagen',
     mediaUrl: '/uploads/suple-board.png',
     posterUrl: '/uploads/suplestore-portada.png',
+    boardFit: 'contain',
     galeria: [
       '/uploads/anuncio-activacion.jpg',
       '/uploads/sorte-shaker.jpg',

@@ -40,7 +40,7 @@ export default function Trabajos() {
                   )}
                   <div
                     className="trabajo-card__board trabajo-card__board--striped"
-                    style={board ? { backgroundImage: `url('${board}')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat' } : undefined}
+                    style={board ? { backgroundImage: `url('${board}')`, backgroundSize: p.boardFit ?? 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' } : undefined}
                   >
                     {!board && <span>{isVideo ? 'Videocaso' : 'Board · miniatura'}</span>}
                     {p.enDesarrollo && (
