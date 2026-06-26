@@ -4,11 +4,11 @@ export const qa = [
     a: 'Siempre me gustó vender. Desde chico entendí que convencer a alguien de algo tiene una lógica detrás, no es suerte. La publicidad fue la forma de convertir eso en una carrera — y los datos, la forma de hacerlo bien.',
   },
   {
-    q: '¿Qué te diferencia?',
+    q: '¿Qué me diferencia?',
     a: 'Que pienso en negocios antes que en creatividad. No busco hacer la pieza más bonita, busco la que mueve el número que importa. Y no espero el título para demostrarlo — ya llevo proyectos reales encima.',
   },
   {
-    q: '¿Cómo tomás decisiones?',
+    q: '¿Cómo tomo decisiones?',
     a: 'Con datos primero, intuición después. Nunca al revés. Antes de proponer cualquier cosa, entiendo qué está pasando con los números: alcance, apertura, conversión. La creatividad entra cuando ya sé qué tiene que resolver.',
   },
   {
@@ -41,10 +41,9 @@ export const skillsExtra = ['Inglés B2'];
 export const certs = [
   { name: 'Google Analytics',         issuer: 'Google',             abbr: 'GOOG', ongoing: false },
   { name: 'Google Ads',               issuer: 'Google',             abbr: 'GOOG', ongoing: false },
-  { name: 'Meta Blueprint',           issuer: 'Meta',               abbr: 'META', ongoing: false },
   { name: 'Kantar Ibope Media',       issuer: 'Kantar',             abbr: 'KNTR', ongoing: false },
   { name: 'Megatime',                 issuer: 'Megatime',           abbr: 'MGT',  ongoing: false },
-  { name: 'Excel Avanzado',           issuer: 'Microsoft',          abbr: 'MSFT', ongoing: false },
+  { name: 'Excel Intermedio',         issuer: 'Microsoft',          abbr: 'MSFT', ongoing: false },
   { name: 'Power BI',                 issuer: 'Microsoft',          abbr: 'MSFT', ongoing: true  },
   { name: 'McKinsey Forward Program', issuer: 'McKinsey & Company', abbr: 'MCK',  ongoing: true  },
   { name: 'Próximamente',             issuer: '—',                  abbr: '···',  ongoing: false, soon: true },
