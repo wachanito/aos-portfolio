@@ -25,7 +25,7 @@ function PasswordGate({ titulo, onUnlock }: { titulo: string; onUnlock: () => vo
       <form className="pw-gate" onSubmit={handleSubmit}>
         <span className="pw-gate__eyebrow"><span className="pw-gate__lock">&#9632;</span> CONFIDENCIAL</span>
         <h1 className="pw-gate__title">{titulo}</h1>
-        <p className="pw-gate__hint">Este proyecto está protegido. Ingresá la contraseña para acceder.</p>
+        <p className="pw-gate__hint">Este proyecto está protegido. Ingresa la contraseña para acceder.</p>
         {error && <p className="pw-gate__error">Contraseña incorrecta</p>}
         <div className="pw-gate__field">
           <input
@@ -50,10 +50,18 @@ function parseMetric(valor: string) {
 
 export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
   const [unlocked, setUnlocked] = useState(!p.password);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const mediaRef = useRef<HTMLDivElement>(null);
-  const phraseRef = useRef<HTMLDivElement>(null);
-  const climaxNumRef = useRef<HTMLDivElement>(null);
+  const videoRef      = useRef<HTMLVideoElement>(null);
+  const mediaRef      = useRef<HTMLDivElement>(null);
+  const phraseRef     = useRef<HTMLDivElement>(null);
+  const climaxNumRef  = useRef<HTMLDivElement>(null);
+  const hideTimerRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const [playing,      setPlaying]      = useState(false);
+  const [currentTime,  setCurrentTime]  = useState(0);
+  const [duration,     setDuration]     = useState(0);
+  const [volume,       setVolume]       = useState(1);
+  const [muted,        setMuted]        = useState(false);
+  const [showControls, setShowControls] = useState(true);
 
   // Check localStorage for saved unlock
   useEffect(() => {
@@ -124,6 +132,31 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
     return () => io.disconnect();
   }, [unlocked, p]);
 
+  // Video player events
+  useEffect(() => {
+    if (!unlocked || p.mediaTipo !== 'video') return;
+    const v = videoRef.current;
+    if (!v) return;
+    function onPlay()  { setPlaying(true); }
+    function onPause() { setPlaying(false); setShowControls(true); }
+    function onTime()  { setCurrentTime(v!.currentTime); }
+    function onDur()   { if (isFinite(v!.duration)) setDuration(v!.duration); }
+    function onVol()   { setVolume(v!.volume); setMuted(v!.muted); }
+    v.addEventListener('play',           onPlay);
+    v.addEventListener('pause',          onPause);
+    v.addEventListener('timeupdate',     onTime);
+    v.addEventListener('durationchange', onDur);
+    v.addEventListener('volumechange',   onVol);
+    return () => {
+      v.removeEventListener('play',           onPlay);
+      v.removeEventListener('pause',          onPause);
+      v.removeEventListener('timeupdate',     onTime);
+      v.removeEventListener('durationchange', onDur);
+      v.removeEventListener('volumechange',   onVol);
+      if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    };
+  }, [unlocked, p.mediaTipo]);
+
   // Parallax
   useEffect(() => {
     if (!unlocked || p.mediaTipo === 'video') return;
@@ -161,6 +194,47 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
     document.addEventListener('keydown', onKey);
     return () => { document.body.removeChild(box); document.removeEventListener('keydown', onKey); };
   }, [unlocked]);
+
+  function resetHideTimer() {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    setShowControls(true);
+    hideTimerRef.current = setTimeout(() => setShowControls(false), 2500);
+  }
+  function togglePlay() {
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.paused) { v.play(); resetHideTimer(); } else { v.pause(); }
+  }
+  function handleMouseMove() { if (playing) resetHideTimer(); }
+  function handleMouseLeave() {
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+    if (playing) setShowControls(false);
+  }
+  function seek(e: React.MouseEvent<HTMLDivElement>) {
+    const v = videoRef.current;
+    if (!v || !duration) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    v.currentTime = ((e.clientX - rect.left) / rect.width) * duration;
+  }
+  function changeVolume(e: React.ChangeEvent<HTMLInputElement>) {
+    const v = videoRef.current;
+    if (!v) return;
+    const val = parseFloat(e.target.value);
+    v.volume = val;
+    v.muted  = val === 0;
+  }
+  function toggleMute() {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = !v.muted;
+    if (!v.muted && v.volume === 0) v.volume = 0.5;
+  }
+  function fmt(s: number) {
+    if (!isFinite(s)) return '0:00';
+    return `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+  }
+  const progress = duration ? (currentTime / duration) * 100 : 0;
+  const ctrlVis  = showControls || !playing;
 
   if (!unlocked) return <PasswordGate titulo={p.titulo} onUnlock={handleUnlock} />;
 
@@ -221,30 +295,72 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
       </div>
 
       <div className="proyecto-media-wrap">
-        <div className={mediaClass} data-media ref={mediaRef}>
-          <div className="proyecto-media__inner" data-media-inner>
-            {p.mediaTipo === 'video' ? (
+        {p.mediaTipo === 'video' ? (
+          <div className={mediaClass} data-media onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave}>
+            <div className="proyecto-media__inner">
               <video ref={videoRef} loop playsInline preload="metadata"
                 poster={p.posterUrl}
-                src={p.mediaUrl || undefined} />
-            ) : p.mediaUrl ? (
-              <img src={p.mediaUrl} alt={p.titulo} />
-            ) : null}
-          </div>
-          {p.mediaTipo === 'video' ? (
-            <>
-              <button className="proyecto-play" data-play type="button" aria-label="Reproducir"
-                onClick={() => { const v = videoRef.current; if (v) v.paused ? v.play() : v.pause(); }}>
-                <span className="ring"><i /></span>
+                src={p.mediaUrl || undefined}
+                onClick={togglePlay}
+                style={{ cursor: 'pointer' }}
+              />
+            </div>
+
+            <button
+              className={`proyecto-play${playing ? ' is-hidden' : ''}`}
+              type="button"
+              aria-label={playing ? 'Pausar' : 'Reproducir'}
+              onClick={togglePlay}
+            >
+              <span className="ring"><i /></span>
+            </button>
+
+            <span className="proyecto-media__badge proyecto-media__badge--top">
+              <span className="tri-right" style={{ borderLeftColor: '#0f0f0f' }} />Video · Videocaso
+            </span>
+
+            <div className={`proyecto-vbar${ctrlVis ? ' is-visible' : ''}`}>
+              <button className="proyecto-vbar__pp" type="button" onClick={togglePlay}
+                aria-label={playing ? 'Pausar' : 'Reproducir'}>
+                {playing
+                  ? <svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><rect x="0" y="0" width="4" height="14"/><rect x="8" y="0" width="4" height="14"/></svg>
+                  : <svg width="12" height="14" viewBox="0 0 12 14" fill="currentColor"><path d="M0 0l12 7L0 14z"/></svg>
+                }
               </button>
-              <span className="proyecto-media__badge proyecto-media__badge--top">
-                <span className="tri-right" style={{ borderLeftColor: '#0f0f0f' }} />Video · Videocaso
-              </span>
-            </>
-          ) : (
+
+              <div className="proyecto-vbar__progress" onClick={seek}
+                role="slider" aria-label="Progreso"
+                aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress)}>
+                <div className="proyecto-vbar__filled" style={{ width: `${progress}%` }} />
+              </div>
+
+              <span className="proyecto-vbar__time">{fmt(currentTime)} / {fmt(duration)}</span>
+
+              <button className="proyecto-vbar__mute" type="button" onClick={toggleMute}
+                aria-label={muted || volume === 0 ? 'Activar sonido' : 'Silenciar'}>
+                {muted || volume === 0
+                  ? <svg width="16" height="14" viewBox="0 0 16 14" fill="currentColor"><path d="M0 4h3l5-3v12L3 10H0V4z"/><path d="M11 5l4 4m0-4l-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none"/></svg>
+                  : volume < 0.5
+                  ? <svg width="16" height="14" viewBox="0 0 16 14" fill="currentColor"><path d="M0 4h3l5-3v12L3 10H0V4z"/><path d="M11 4.5a4 4 0 0 1 0 5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>
+                  : <svg width="16" height="14" viewBox="0 0 16 14" fill="currentColor"><path d="M0 4h3l5-3v12L3 10H0V4z"/><path d="M11 4.5a4 4 0 0 1 0 5M13.5 2a7 7 0 0 1 0 10" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/></svg>
+                }
+              </button>
+
+              <input type="range" className="proyecto-vbar__vol" min="0" max="1" step="0.01"
+                value={muted ? 0 : volume}
+                onChange={changeVolume}
+                aria-label="Volumen"
+              />
+            </div>
+          </div>
+        ) : (
+          <div className={mediaClass} data-media ref={mediaRef}>
+            <div className="proyecto-media__inner" data-media-inner>
+              {p.mediaUrl ? <img src={p.mediaUrl} alt={p.titulo} /> : null}
+            </div>
             <span className="proyecto-media__badge">Media de apertura · Board</span>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       {p.esPropuesta && (

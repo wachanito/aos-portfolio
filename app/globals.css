@@ -135,16 +135,22 @@ img, video { display: block; max-width: 100%; }
 .nav-item--drop.is-open .nav-dropdown__item:nth-child(5) { animation-delay: .24s; }
 .nav-item--drop.is-open .nav-dropdown__item:nth-child(6) { animation-delay: .29s; }
 .nav-dropdown__item {
-  display: block; padding: 11px 18px; border-bottom: var(--border);
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 18px; border-bottom: var(--border);
   color: var(--clr-text); text-decoration: none;
   font-family: var(--ff-title); font-size: 12px;
   text-transform: uppercase; letter-spacing: -0.01em;
   transition: background .15s ease, color .15s ease, padding-left .15s ease;
   opacity: 0;
 }
+.nav-dropdown__num {
+  font-size: 10px; opacity: 0.4; flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
 .nav-dropdown__item:last-child { border-bottom: none; }
 @media (hover: hover) {
   .nav-dropdown__item:hover { background: var(--clr-text); color: var(--clr-bg); padding-left: 26px; }
+  .nav-dropdown__item:hover .nav-dropdown__num { opacity: 0.6; }
 }
 /* hamburguesa animada cuando nav-open */
 .nav-open .nav-toggle__bar:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
@@ -429,13 +435,15 @@ textarea.field__input { resize: none; line-height: 1.6; }
   .proyecto-pnav a:not(.is-next):hover .arr { transform: translateX(-10px); }
   .proyecto-pnav a.is-next:hover .arr { transform: translateX(10px); }
 }
-.proyecto-vbar { position: absolute; bottom: 0; left: 0; right: 0; z-index: 5; display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: linear-gradient(transparent, rgba(0,0,0,.72)); opacity: 0; transition: opacity .25s ease; }
-.proyecto-media--video:hover .proyecto-vbar, .proyecto-vbar:focus-within { opacity: 1; }
-.proyecto-vbar__pp, .proyecto-vbar__mute { background: none; border: none; cursor: pointer; color: #fff; padding: 0; flex-shrink: 0; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
-.proyecto-vbar__progress { flex: 1; height: 4px; background: rgba(255,255,255,.25); cursor: pointer; border-radius: 2px; position: relative; }
-.proyecto-vbar__filled { height: 100%; background: var(--accent); border-radius: 2px; width: 0; pointer-events: none; }
-.proyecto-vbar__time { font-size: 10px; color: rgba(255,255,255,.7); white-space: nowrap; letter-spacing: .04em; flex-shrink: 0; }
-.proyecto-vbar__vol { width: 72px; accent-color: var(--accent); flex-shrink: 0; }
+.proyecto-vbar { position: absolute; bottom: 0; left: 0; right: 0; z-index: 5; display: flex; align-items: center; gap: 10px; padding: 12px 16px 14px; background: linear-gradient(transparent, rgba(0,0,0,.8)); opacity: 0; transition: opacity .3s ease; pointer-events: none; }
+.proyecto-vbar.is-visible { opacity: 1; pointer-events: auto; }
+.proyecto-vbar__pp, .proyecto-vbar__mute { background: none; border: none; cursor: pointer; color: #fff; padding: 0; flex-shrink: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; opacity: .85; transition: opacity .15s ease; }
+.proyecto-vbar__pp:hover, .proyecto-vbar__mute:hover { opacity: 1; }
+.proyecto-vbar__progress { flex: 1; height: 4px; background: rgba(255,255,255,.22); cursor: pointer; border-radius: 2px; position: relative; transition: height .15s ease; }
+.proyecto-vbar__progress:hover { height: 6px; }
+.proyecto-vbar__filled { height: 100%; background: var(--accent); border-radius: 2px; width: 0; pointer-events: none; transition: width .1s linear; }
+.proyecto-vbar__time { font-size: 10px; color: rgba(255,255,255,.65); white-space: nowrap; letter-spacing: .06em; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.proyecto-vbar__vol { width: 68px; accent-color: var(--accent); flex-shrink: 0; cursor: pointer; height: 4px; border-radius: 2px; }
 .proyecto-password-wrap { min-height: 88vh; display: flex; align-items: center; justify-content: center; padding: 48px; }
 .pw-gate { display: flex; flex-direction: column; gap: 28px; max-width: 540px; width: 100%; }
 .pw-gate__eyebrow { font-family: var(--ff-body); font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--clr-red); display: flex; align-items: center; gap: 10px; }
