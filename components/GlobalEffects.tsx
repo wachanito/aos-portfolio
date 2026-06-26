@@ -59,34 +59,41 @@ export default function GlobalEffects() {
       }, true); // capture = true
     }
 
-    // ── Custom cursor ──
+    // ── Custom cursor + Lenis — unified RAF ──
+    let cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+    let rx = cx, ry = cy;
+    let lenisInstance: any = null;
+    let rafId: number;
+
     if (!COARSE) {
       document.documentElement.classList.add('aos-cursor');
       const dot  = document.createElement('div'); dot.className  = 'aos-cursor-dot';
       const ring = document.createElement('div'); ring.className = 'aos-cursor-ring';
       document.body.appendChild(dot); document.body.appendChild(ring);
-      let rx = window.innerWidth / 2, ry = window.innerHeight / 2, cx = rx, cy = ry;
       window.addEventListener('mousemove', e => {
         rx = e.clientX; ry = e.clientY;
         dot.style.left = rx + 'px'; dot.style.top = ry + 'px';
       });
-      (function loop() {
-        requestAnimationFrame(loop);
-        cx += (rx - cx) * 0.11; cy += (ry - cy) * 0.11;
-        ring.style.left = cx + 'px'; ring.style.top = cy + 'px';
-      })();
     }
 
-    // ── Lenis smooth scroll ──
     async function initLenis() {
-      if (REDUCED) return;
+      // Skip Lenis on touch/mobile — native scroll is already GPU-accelerated
+      if (REDUCED || COARSE) return;
       const { default: Lenis } = await import('lenis');
-      const lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
-      function raf(t: number) { lenis.raf(t); requestAnimationFrame(raf); }
-      requestAnimationFrame(raf);
-      (window as any).lenis = lenis;
+      lenisInstance = new Lenis({ lerp: 0.085, smoothWheel: true });
+      (window as any).lenis = lenisInstance;
     }
-    initLenis();
+
+    function masterRAF(t: number) {
+      rafId = requestAnimationFrame(masterRAF);
+      lenisInstance?.raf(t);
+      if (!COARSE) {
+        cx += (rx - cx) * 0.11; cy += (ry - cy) * 0.11;
+        const ring = document.querySelector<HTMLElement>('.aos-cursor-ring');
+        if (ring) { ring.style.left = cx + 'px'; ring.style.top = cy + 'px'; }
+      }
+    }
+    initLenis().then(() => { rafId = requestAnimationFrame(masterRAF); });
 
     // ── Scroll progress bar ──
     const bar = document.createElement('div'); bar.className = 'scroll-progress';

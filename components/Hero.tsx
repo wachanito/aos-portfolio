@@ -65,11 +65,19 @@ export default function Hero() {
       const orbit  = orbitRef.current;
       if (!canvas) return;
 
+      // Skip on touch/mobile — too expensive, not worth it at small size
+      if (window.matchMedia('(pointer: coarse)').matches) {
+        canvas.style.display = 'none';
+        if (orbit) orbit.style.display = 'none';
+        return;
+      }
+
       const THREE = await import('three');
 
       const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
       renderer.setClearColor(0x000000, 0);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      // Cap at 1.5 — 2x doubles GPU load on Retina screens with minimal visual gain
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 
       const scene  = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
@@ -196,8 +204,11 @@ export default function Hero() {
         });
       }
 
+      let frame = 0;
       function animate() {
+        if (document.hidden) { animId = requestAnimationFrame(animate); return; }
         animId = requestAnimationFrame(animate);
+        frame++;
         mx += (tx - mx) * 0.04; my += (ty - my) * 0.04;
         currentSpeed += (targetSpeed - currentSpeed) * 0.028;
         autoAngle += currentSpeed;
@@ -205,7 +216,8 @@ export default function Hero() {
         mesh.rotation.x = my * 0.12;
         verts.rotation.copy(mesh.rotation);
         renderer.render(scene, camera);
-        drawOrbit();
+        // drawOrbit at 30fps (every other frame) — canvas 2D tags don't need 60fps
+        if (frame % 2 === 0) drawOrbit();
       }
       animate();
 
