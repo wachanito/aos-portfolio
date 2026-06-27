@@ -27,7 +27,7 @@ export const skillGroups: Record<string, string[]> = {
   'Performance & Contenido': [
     'Meta Ads',
     'Google Ads',
-    'Community Management',
+    'Social Media Management',
     'Email Marketing',
     'Adobe Suite',
     'Canva',
@@ -55,7 +55,7 @@ export const servicios = [
     desc: 'Diseño planes de contenido y embudos orientados a objetivos concretos: captación, posicionamiento o conversión.',
   },
   {
-    nombre: 'Community Management',
+    nombre: 'Social Media Management',
     desc: 'Gestión y crecimiento de cuentas con contenido pensado para la audiencia correcta. Más alcance real, no vanidad.',
   },
   {

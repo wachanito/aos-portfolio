@@ -6,7 +6,7 @@ export const proyectos: Proyecto[] = [
     slug: 'remax-inside',
     titulo: 'Remax Inside',
     numero: '01',
-    rol: 'Community Management',
+    rol: 'Social Media Management',
     tags: 'Gestión de redes · 3 meses · 2026',
     reto: 'La cuenta presentaba una comunidad inactiva y una identidad fragmentada: publicaciones irregulares, sin línea editorial ni voz reconocible. El alcance estaba estancado y el contenido no generaba conversación. El desafío era reconstruir desde la base la presencia digital de la marca y devolverle relevancia frente a su audiencia inmobiliaria.',
     accion: 'Definí una línea editorial estructurada con pilares de contenido, un calendario de publicación consistente y una voz experta y cercana. Reformulé el feed con formatos orientados a la conversación —carruseles informativos, contenido behind-the-scenes y piezas de autoridad— respaldados por un sistema visual coherente que unificó la identidad de la cuenta.',
