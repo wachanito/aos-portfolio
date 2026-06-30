@@ -33,7 +33,7 @@ export const skillGroups: Record<string, string[]> = {
     'Canva',
   ],
   'Data & Herramientas': ['Google Analytics', 'Excel', 'Power BI'],
-  'Inteligencia Artificial': ['IA', 'IA Aplicada a Negocios', 'Agentic IA', 'Claude Code'],
+  'Inteligencia Artificial': ['IA', 'IA Aplicada a Negocios', 'IA Agéntica', 'Claude Code'],
 };
 
 export const skillsExtra = ['Inglés B2'];

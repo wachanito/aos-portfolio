@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 import Nav from '@/components/Nav';
 import GlobalEffects from '@/components/GlobalEffects';
@@ -37,6 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <span className="logo">AOS<span>.</span></span>
           <span>Santiago, Chile &mdash; {new Date().getFullYear()}</span>
         </footer>
+        <Analytics />
       </body>
     </html>
   );

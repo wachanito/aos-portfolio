@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 
-const WORDS = ['DATA', 'AUDIENCIA', 'ESTRATEGIA', 'CONTENIDO', 'COMMUNITY',
+const WORDS = ['DATA', 'AUDIENCIA', 'ESTRATEGIA', 'CONTENIDO', 'PERFORMANCE',
                'EMAIL MARKETING', 'ANALYTICS', 'BRANDING', 'REDES SOCIALES', 'PRODUCCIÓN'];
 
 export default function Hero() {
