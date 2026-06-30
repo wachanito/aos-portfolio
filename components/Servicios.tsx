@@ -24,7 +24,7 @@ export default function Servicios() {
   return (
     <section id="servicios" className="servicios">
       <div className="aos-section">
-        <div className="servicios__head">
+        <div className="servicios__head" data-reveal>
           <div className="aos-section-head">
             <h2 className="aos-title">Servic<span className="accent">ios.</span></h2>
             <span className="aos-underline" data-underline />
@@ -33,7 +33,7 @@ export default function Servicios() {
 
         <div className="servicios-list" role="list">
           {servicios.map((s, i) => (
-            <div key={i} className={`servicio-row${open === i ? ' is-open' : ''}`} data-reveal data-reveal-delay={String(i * 100)}>
+            <div key={i} className={`servicio-row${open === i ? ' is-open' : ''}`} data-reveal data-reveal-delay={String(100 + i * 90)}>
               <button
                 className="servicio-row__head"
                 type="button"
