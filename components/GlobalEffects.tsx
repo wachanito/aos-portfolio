@@ -64,12 +64,14 @@ export default function GlobalEffects() {
     let rx = cx, ry = cy;
     let lenisInstance: any = null;
     let rafId: number;
+    let ringEl: HTMLElement | null = null;
 
     if (!COARSE) {
       document.documentElement.classList.add('aos-cursor');
       const dot  = document.createElement('div'); dot.className  = 'aos-cursor-dot';
       const ring = document.createElement('div'); ring.className = 'aos-cursor-ring';
       document.body.appendChild(dot); document.body.appendChild(ring);
+      ringEl = ring;
       window.addEventListener('mousemove', e => {
         rx = e.clientX; ry = e.clientY;
         dot.style.left = rx + 'px'; dot.style.top = ry + 'px';
@@ -80,17 +82,16 @@ export default function GlobalEffects() {
       // Skip Lenis on touch/mobile — native scroll is already GPU-accelerated
       if (REDUCED || COARSE) return;
       const { default: Lenis } = await import('lenis');
-      lenisInstance = new Lenis({ lerp: 0.085, smoothWheel: true });
+      lenisInstance = new Lenis({ lerp: 0.11, smoothWheel: true });
       (window as any).lenis = lenisInstance;
     }
 
     function masterRAF(t: number) {
       rafId = requestAnimationFrame(masterRAF);
       lenisInstance?.raf(t);
-      if (!COARSE) {
+      if (!COARSE && ringEl) {
         cx += (rx - cx) * 0.11; cy += (ry - cy) * 0.11;
-        const ring = document.querySelector<HTMLElement>('.aos-cursor-ring');
-        if (ring) { ring.style.left = cx + 'px'; ring.style.top = cy + 'px'; }
+        ringEl.style.left = cx + 'px'; ringEl.style.top = cy + 'px';
       }
     }
     initLenis().then(() => { rafId = requestAnimationFrame(masterRAF); });
