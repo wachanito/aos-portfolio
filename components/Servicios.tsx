@@ -42,7 +42,7 @@ export default function Servicios() {
               >
                 <span className="servicio-row__num">{String(i + 1).padStart(2, '0')}</span>
                 <span className="servicio-row__name">{s.nombre}</span>
-                <span className="servicio-row__sign">{open === i ? '−' : '+'}</span>
+                <span className="servicio-row__sign">+</span>
               </button>
               <div className="servicio-row__panel" ref={el => { panelRefs.current[i] = el; }}>
                 <div className="servicio-row__panel-inner" ref={el => { innerRefs.current[i] = el; }}>

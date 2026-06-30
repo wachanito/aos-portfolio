@@ -360,6 +360,7 @@ img, video { display: block; max-width: 100%; }
 .servicio-row.is-open .servicio-row__num { color: var(--accent); }
 .servicio-row.is-open .servicio-row__panel { height: var(--panel-h, auto); }
 .servicio-row.is-open .servicio-row__panel-inner { opacity: 1; transform: none; }
+.servicio-row.is-open .servicio-row__sign { transform: rotate(45deg); }
 @media (hover: hover) {
   .servicio-row:not(.is-open) .servicio-row__head:hover .servicio-row__name { transform: translateX(12px); }
   .servicio-row:not(.is-open) .servicio-row__head:hover .servicio-row__num { color: var(--accent); }
