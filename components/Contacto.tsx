@@ -67,20 +67,20 @@ export default function Contacto() {
   return (
     <section id="contacto" className="contacto">
       <div className="aos-section">
-        <div className="contacto__head">
+        <div className="contacto__head" data-reveal>
           <div className="aos-section-head">
             <h2 className="aos-title">Hablem<span className="accent">os.</span></h2>
             <span className="aos-underline" data-underline />
           </div>
         </div>
 
-        <div className="contacto-available">
+        <div className="contacto-available" data-reveal data-reveal-delay="100">
           <span className="contacto-available__dot" aria-hidden="true" />
           <span>Disponible para proyectos</span>
         </div>
 
         <div className="contacto-layout">
-          <form ref={formRef} className="contacto-form" noValidate onSubmit={handleSubmit}>
+          <form ref={formRef} className="contacto-form" data-reveal data-reveal-delay="150" noValidate onSubmit={handleSubmit}>
             <input type="hidden" name="_subject" value="Nuevo mensaje desde el portfolio de Agustín Oyarzún" />
 
             <label className={`field${errors.nombre && touched.nombre ? ' has-error' : ''}`}>
@@ -105,7 +105,7 @@ export default function Contacto() {
             </button>
           </form>
 
-          <div className="contacto-aside">
+          <div className="contacto-aside" data-reveal data-reveal-delay="250">
             <a className="contacto-wa" href="https://wa.me/56964939070" target="_blank" rel="noopener noreferrer">
               <span style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <span className="contacto-wa__k">WhatsApp directo</span>

@@ -5,7 +5,7 @@ export default function Trabajos() {
   return (
     <section id="trabajos" className="trabajos">
       <div className="aos-section">
-        <div className="trabajos__head">
+        <div className="trabajos__head" data-reveal>
           <span className="aos-eyebrow"><span className="aos-eyebrow__dot" />Selección de trabajos</span>
           <div className="aos-section-head">
             <h2 className="aos-title">Trabajos</h2>
