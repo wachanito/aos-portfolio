@@ -250,11 +250,11 @@ img, video { display: block; max-width: 100%; }
 .trabajos__head .aos-title { font-size: clamp(48px, 8vw, 120px); }
 .trabajos__index { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; }
 .trabajos-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-left: var(--border); border-top: var(--border); }
-.trabajo-card { position: relative; display: flex; flex-direction: column; aspect-ratio: 1 / 1.18; contain: size; border-right: var(--border); border-bottom: var(--border); background: var(--clr-bg); color: var(--clr-text); overflow: hidden; transition: background .35s ease, color .35s ease, transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease, opacity .7s cubic-bezier(.16,1,.3,1); }
+.trabajo-card { position: relative; display: flex; flex-direction: column; border-right: var(--border); border-bottom: var(--border); background: var(--clr-bg); color: var(--clr-text); overflow: hidden; transition: background .35s ease, color .35s ease, transform .35s cubic-bezier(.16,1,.3,1), box-shadow .35s ease, opacity .7s cubic-bezier(.16,1,.3,1); }
 .trabajo-card__top { display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.12em; position: relative; z-index: 3; }
 .trabajo-card__index { transition: color .35s ease; }
 .trabajo-card__arrow { font-family: var(--ff-title); font-size: 18px; color: var(--clr-red); transition: transform .35s ease; }
-.trabajo-card__frame { flex: 1; margin: 0 22px; border: 1px solid currentColor; position: relative; overflow: hidden; z-index: 2; transition: border-color .35s ease; }
+.trabajo-card__frame { aspect-ratio: 35 / 27; margin: 16px 22px; border: 1px solid currentColor; position: relative; overflow: hidden; z-index: 2; transition: border-color .35s ease; }
 .trabajo-card__board { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; transition: transform .6s cubic-bezier(.16,1,.3,1); }
 .trabajo-card__board--striped { background-image: repeating-linear-gradient(45deg, rgba(0,0,0,.045) 0 10px, transparent 10px 20px); }
 .trabajo-card__board span { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.4; }
@@ -597,7 +597,6 @@ textarea.field__input { resize: none; line-height: 1.6; }
 }
 @media (max-width: 600px) {
   .trabajos-grid { grid-template-columns: 1fr; }
-  .trabajo-card { aspect-ratio: 1 / 1; }
   .proyecto-gallery--2, .proyecto-gallery--3 { grid-template-columns: 1fr; }
   .cert-grid { grid-template-columns: 1fr; }
 }
