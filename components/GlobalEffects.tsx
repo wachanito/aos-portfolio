@@ -3,20 +3,26 @@
 import { useEffect, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
+const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@!¿?';
+
 function scramble(el: HTMLElement) {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&@!¿?';
   const original = el.dataset.final || el.textContent || '';
   el.dataset.final = original;
   let iter = 0;
   clearInterval((el as any)._t);
   (el as any)._t = setInterval(() => {
-    el.textContent = original.split('').map((c, i) => {
-      if (c === ' ') return ' ';
-      if (i < iter) return original[i];
-      return chars[Math.floor(Math.random() * chars.length)];
-    }).join('');
-    iter += 0.9;
-    if (iter >= original.length) { clearInterval((el as any)._t); el.textContent = original; }
+    try {
+      el.textContent = original.split('').map((c, i) => {
+        if (c === ' ') return ' ';
+        if (i < iter) return original[i];
+        return SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
+      }).join('');
+      iter += 0.9;
+      if (iter >= original.length) { clearInterval((el as any)._t); el.textContent = original; }
+    } catch {
+      clearInterval((el as any)._t);
+      el.textContent = original;
+    }
   }, 34);
 }
 
