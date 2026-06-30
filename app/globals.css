@@ -230,11 +230,6 @@ img, video { display: block; max-width: 100%; }
 /* Compensar header fijo en anclas */
 #inicio, #trabajos, #sobre-mi, #certificaciones, #servicios, #contacto { scroll-margin-top: 64px; }
 
-/* Skip rendering off-screen sections until near viewport */
-#sobre-mi, #certificaciones, #contacto {
-  content-visibility: auto;
-  contain-intrinsic-size: 0 700px;
-}
 
 /* ── Section generic ── */
 .aos-section { max-width: 1280px; margin: 0 auto; padding: 120px 48px 160px; }
