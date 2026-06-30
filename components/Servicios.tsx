@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useLayoutEffect } from 'react';
 import { servicios } from '@/data/content';
 
 export default function Servicios() {
@@ -8,7 +8,7 @@ export default function Servicios() {
   const panelRefs = useRef<(HTMLDivElement | null)[]>([]);
   const innerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     servicios.forEach((_, i) => {
       const panel = panelRefs.current[i];
       const inner = innerRefs.current[i];
