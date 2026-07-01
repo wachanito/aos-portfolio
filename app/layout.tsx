@@ -6,19 +6,23 @@ import GlobalEffects from '@/components/GlobalEffects';
 import Preloader from '@/components/Preloader';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://agustin-oyarzun.com'),
   title: 'Agustín Oyarzún — Estratega Digital',
   description: 'Portfolio de Agustín Oyarzún. Estrategia digital, datos y contenido que mueve el indicador. Santiago de Chile.',
   openGraph: {
     title: 'Agustín Oyarzún — Estratega Digital',
     description: 'Portfolio de Agustín Oyarzún. Estrategia digital, datos y contenido que mueve el indicador.',
+    url: 'https://agustin-oyarzun.com',
     siteName: 'AOS Portfolio',
     locale: 'es_CL',
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'AOS — Agustín Oyarzún, Estratega Digital' }],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'Agustín Oyarzún — Estratega Digital',
     description: 'Portfolio de Agustín Oyarzún. Estrategia digital, datos y contenido que mueve el indicador.',
+    images: ['/og-image.png'],
   },
 };
 
