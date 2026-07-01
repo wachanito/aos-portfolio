@@ -184,9 +184,10 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
     };
   }, [unlocked, p.mediaTipo]);
 
-  // Parallax
+  // Parallax — sólo en boards con overscan (boardFit contain). Los boards
+  // estándar se muestran completos (sin recorte), así que no llevan parallax.
   useEffect(() => {
-    if (!unlocked || p.mediaTipo === 'video') return;
+    if (!unlocked || p.mediaTipo === 'video' || p.boardFit !== 'contain') return;
     const media = mediaRef.current;
     if (!media) return;
     const inner = media.querySelector<HTMLElement>('[data-media-inner]');
@@ -201,7 +202,7 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener('scroll', onScroll);
-  }, [unlocked, p.mediaTipo]);
+  }, [unlocked, p.mediaTipo, p.boardFit]);
 
   // Scroll al inicio al cambiar de proyecto
   useEffect(() => {
@@ -291,7 +292,7 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
 
   const mainNum = p.tipoClimax === 'numerico' && p.climaxNums?.length ? parseMetric(p.climaxNums[0].valor) : null;
   const extras  = p.climaxNums?.slice(1) ?? [];
-  const mediaClass = `proyecto-media${p.mediaTipo === 'video' ? ' proyecto-media--video' : p.boardFit === 'contain' ? ' proyecto-media--natural' : ''}`;
+  const mediaClass = `proyecto-media${p.mediaTipo === 'video' ? ' proyecto-media--video' : p.boardFit === 'contain' ? ' proyecto-media--natural' : ' proyecto-media--board'}`;
 
   function renderGallery(imgs: string[], extraClass = '') {
     const cols = imgs.length >= 3 ? '3' : imgs.length === 2 ? '2' : '1';

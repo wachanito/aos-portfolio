@@ -33,20 +33,22 @@ export default function Servicios() {
 
         <div className="servicios-list" role="list">
           {servicios.map((s, i) => (
-            <div key={i} className={`servicio-row${open === i ? ' is-open' : ''}`} data-reveal data-reveal-delay={String(100 + i * 90)}>
-              <button
-                className="servicio-row__head"
-                type="button"
-                aria-expanded={open === i}
-                onClick={() => setOpen(open === i ? null : i)}
-              >
-                <span className="servicio-row__num">{String(i + 1).padStart(2, '0')}</span>
-                <span className="servicio-row__name">{s.nombre}</span>
-                <span className="servicio-row__sign">+</span>
-              </button>
-              <div className="servicio-row__panel" ref={el => { panelRefs.current[i] = el; }}>
-                <div className="servicio-row__panel-inner" ref={el => { innerRefs.current[i] = el; }}>
-                  <p>{s.desc}</p>
+            <div key={i} className="servicio-reveal" data-reveal data-reveal-delay={String(100 + i * 90)}>
+              <div className={`servicio-row${open === i ? ' is-open' : ''}`}>
+                <button
+                  className="servicio-row__head"
+                  type="button"
+                  aria-expanded={open === i}
+                  onClick={() => setOpen(open === i ? null : i)}
+                >
+                  <span className="servicio-row__num">{String(i + 1).padStart(2, '0')}</span>
+                  <span className="servicio-row__name">{s.nombre}</span>
+                  <span className="servicio-row__sign">+</span>
+                </button>
+                <div className="servicio-row__panel" ref={el => { panelRefs.current[i] = el; }}>
+                  <div className="servicio-row__panel-inner" ref={el => { innerRefs.current[i] = el; }}>
+                    <p>{s.desc}</p>
+                  </div>
                 </div>
               </div>
             </div>

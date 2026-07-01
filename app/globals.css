@@ -473,6 +473,9 @@ textarea.field__input { resize: none; line-height: 1.6; }
 .proyecto-media { border: var(--border); aspect-ratio: 16 / 9; position: relative; overflow: hidden; background: var(--clr-text); }
 .proyecto-media__inner { position: absolute; inset: -8% 0; will-change: transform; }
 .proyecto-media__inner img, .proyecto-media__inner video { width: 100%; height: 100%; object-fit: cover; }
+/* Board estándar: marco con la proporción real de la imagen (35/27 = 1400×1080) → se ve completo, sin recorte */
+.proyecto-media--board { aspect-ratio: 35 / 27; }
+.proyecto-media--board .proyecto-media__inner { inset: 0; will-change: auto; }
 .proyecto-media--video .proyecto-media__inner { inset: 0; will-change: unset; }
 .proyecto-media--video .proyecto-media__inner video { object-fit: contain; background: #000; }
 .proyecto-media--vimeo { background: #000; }
