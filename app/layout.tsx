@@ -3,6 +3,7 @@ import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 import Nav from '@/components/Nav';
 import GlobalEffects from '@/components/GlobalEffects';
+import Preloader from '@/components/Preloader';
 
 export const metadata: Metadata = {
   title: 'Agustín Oyarzún — Estratega Digital',
@@ -25,12 +26,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es">
       <head>
+        {/* Aplica el modo invertido antes del primer paint para evitar flash */}
+        <script dangerouslySetInnerHTML={{ __html: "try{if(localStorage.getItem('aos-invert')==='1')document.documentElement.classList.add('aos-invert')}catch(e){}" }} />
         {/* Preload critical fonts to eliminate render-blocking */}
         <link rel="preload" href="/fonts/anton-v27-latin-regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/courier-prime-v11-latin-regular.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <link rel="preload" href="/fonts/courier-prime-v11-latin-700.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
       </head>
       <body>
+        <Preloader />
         <Nav />
         <GlobalEffects />
         {children}

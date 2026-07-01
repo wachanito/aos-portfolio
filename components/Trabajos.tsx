@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { proyectos } from '@/data/proyectos';
 
@@ -18,6 +20,7 @@ export default function Trabajos() {
           {proyectos.map((p, idx) => {
             const board = p.boardUrl || p.posterUrl || p.mediaUrl || '';
             const isVideo = p.mediaTipo === 'video';
+            const hasClip = !!p.mediaUrl && p.mediaUrl.endsWith('.mp4');
             return (
               <Link
                 key={p.slug}
@@ -26,6 +29,8 @@ export default function Trabajos() {
                 data-reveal
                 data-reveal-delay={String(idx * 80)}
                 {...(isVideo ? { 'data-has-video': '' } : {})}
+                onMouseEnter={hasClip ? (e) => { const v = e.currentTarget.querySelector('video'); if (v) v.play().catch(() => {}); } : undefined}
+                onMouseLeave={hasClip ? (e) => { const v = e.currentTarget.querySelector('video'); if (v) { v.pause(); v.currentTime = 0; } } : undefined}
               >
                 <div className="trabajo-card__top">
                   <span className="trabajo-card__index">{p.numero}</span>
@@ -47,6 +52,9 @@ export default function Trabajos() {
                       <span className="trabajo-card__wip-stamp" aria-hidden="true">EN PROGRESO</span>
                     )}
                   </div>
+                  {hasClip && (
+                    <video className="trabajo-card__clip" src={p.mediaUrl} muted loop playsInline preload="none" aria-hidden="true" />
+                  )}
                   {isVideo && (
                     <>
                       <div className="trabajo-card__playhint" aria-hidden="true">

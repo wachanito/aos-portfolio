@@ -99,14 +99,14 @@ export default function Contacto() {
               {errors.mensaje && touched.mensaje && <span className="field__error">{errors.mensaje}</span>}
             </label>
 
-            <button type="submit" className={`contacto-submit${status === 'sent' ? ' is-sent' : ''}`} disabled={status === 'sending'}>
+            <button type="submit" className={`contacto-submit${status === 'sent' ? ' is-sent' : ''}`} data-magnetic="0.35" disabled={status === 'sending'}>
               <span>{btnLabel}</span>
               <span className="arr" aria-hidden="true">&#8594;</span>
             </button>
           </form>
 
           <div className="contacto-aside" data-reveal data-reveal-delay="250">
-            <a className="contacto-wa" href="https://wa.me/56964939070" target="_blank" rel="noopener noreferrer">
+            <a className="contacto-wa" href="https://wa.me/56964939070" target="_blank" rel="noopener noreferrer" data-magnetic="0.25">
               <span style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <span className="contacto-wa__k">WhatsApp directo</span>
                 <span className="contacto-wa__v">Escríbeme por WhatsApp</span>

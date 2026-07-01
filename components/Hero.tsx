@@ -16,6 +16,14 @@ export default function Hero() {
     async function initGSAP() {
       const { gsap } = await import('gsap');
 
+      // Esperar a que el preloader termine (con fallback por si algo falla)
+      await new Promise<void>(res => {
+        if ((window as any).__aosLoaded) return res();
+        const on = () => { window.removeEventListener('aos:loaded', on); res(); };
+        window.addEventListener('aos:loaded', on);
+        setTimeout(() => { window.removeEventListener('aos:loaded', on); res(); }, 3500);
+      });
+
       if (REDUCED) {
         document.querySelectorAll<HTMLElement>('.hero__title .word').forEach(w => { w.style.transform = 'none'; w.style.opacity = '1'; });
         const l = document.querySelector<HTMLElement>('.hero__label'); if (l) { l.style.opacity = '1'; l.style.transform = 'none'; }
@@ -259,7 +267,7 @@ export default function Hero() {
           <span className="word-clip"><span className="word">AUDIENCIA</span></span>
         </h1>
 
-        <a href="#trabajos" className="hero__cta"
+        <a href="#trabajos" className="hero__cta" data-magnetic="0.4"
            onClick={e => {
              e.preventDefault();
              const el = document.getElementById('trabajos');

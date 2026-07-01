@@ -49,13 +49,54 @@ function parseMetric(valor: string) {
   return { prefix: '', value: 0, suffix: '', decimals: 0, raw: valor };
 }
 
+// Métrica con count-up + barra que se dibuja al entrar en viewport.
+// Sólo cuenta si es un número limpio (73,5% / +300% / 80). Los porcentajes
+// reales (≤100, sin +) llenan la barra en proporción; el resto la dibuja completa.
+function Metric({ valor, className }: { valor: string; className: string }) {
+  const numRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const el = numRef.current, bar = barRef.current;
+    if (!el) return;
+    const m = parseMetric(valor);
+    const isClean = /^[+\-]?[\d.,]+\s*%?$/.test(valor.trim());
+    const fill = (m.suffix.includes('%') && !m.prefix.includes('+') && m.value <= 100) ? m.value / 100 : 1;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fmt = (v: number) => m.prefix + (m.decimals > 0 ? v.toFixed(m.decimals).replace('.', ',') : String(Math.round(v))) + m.suffix;
+
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      if (bar) requestAnimationFrame(() => { bar.style.transform = `scaleX(${fill})`; });
+      if (!isClean || reduce) { el.textContent = valor; return; }
+      const dur = 1500, start = performance.now();
+      const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+      (function tick(now: number) {
+        const t = Math.min(1, (now - start) / dur);
+        el.textContent = fmt(ease(t) * m.value);
+        if (t < 1) requestAnimationFrame(tick);
+        else el.textContent = valor;
+      })(performance.now());
+    }), { threshold: 0.4 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [valor]);
+
+  return (
+    <>
+      <div className={className} ref={numRef}>{valor}</div>
+      <span className="proyecto-metric-bar" aria-hidden="true"><span ref={barRef} /></span>
+    </>
+  );
+}
+
 export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
   const router = useRouter();
   const [unlocked, setUnlocked] = useState(!p.password);
   const videoRef      = useRef<HTMLVideoElement>(null);
   const mediaRef      = useRef<HTMLDivElement>(null);
   const phraseRef     = useRef<HTMLDivElement>(null);
-  const climaxNumRef  = useRef<HTMLDivElement>(null);
   const hideTimerRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [playing,      setPlaying]      = useState(false);
@@ -108,33 +149,6 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
     io.observe(el);
     return () => io.disconnect();
   }, [unlocked]);
-
-  // Count-up
-  useEffect(() => {
-    if (!unlocked || !climaxNumRef.current || p.tipoClimax !== 'numerico' || !p.climaxNums?.length) return;
-    const el = climaxNumRef.current;
-    const main = parseMetric(p.climaxNums[0].valor);
-    function format(v: number) {
-      const n = main.decimals > 0 ? v.toFixed(main.decimals).replace('.', ',') : String(Math.round(v));
-      return main.prefix + n + main.suffix;
-    }
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (!e.isIntersecting) return;
-        io.disconnect();
-        const dur = 1600, start = performance.now();
-        function ease(t: number) { return 1 - Math.pow(1 - t, 3); }
-        function tick(now: number) {
-          const t = Math.min(1, (now - start) / dur);
-          el.textContent = format(ease(t) * main.value);
-          if (t < 1) requestAnimationFrame(tick);
-        }
-        requestAnimationFrame(tick);
-      });
-    }, { threshold: 0.4 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, [unlocked, p]);
 
   // Video player events
   useEffect(() => {
@@ -455,15 +469,13 @@ export default function ProyectoClient({ proyecto: p, prev, next }: Props) {
       {/* Clímax */}
       {p.tipoClimax === 'numerico' && mainNum && (
         <section className="proyecto-climax">
-          <div className="proyecto-climax__num" ref={climaxNumRef}>
-            {mainNum.prefix}0{mainNum.suffix}
-          </div>
+          <Metric valor={p.climaxNums![0].valor} className="proyecto-climax__num" />
           <div className="proyecto-climax__label">{p.climaxNums![0].label}</div>
           {extras.length > 0 && (
             <div className="proyecto-substats">
               {extras.map((ex, i) => (
                 <div key={i} className="proyecto-substats__cell">
-                  <div className="proyecto-substats__num">{ex.valor}</div>
+                  <Metric valor={ex.valor} className="proyecto-substats__num" />
                   <div className="proyecto-substats__label">{ex.label}</div>
                 </div>
               ))}

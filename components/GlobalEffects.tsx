@@ -42,6 +42,7 @@ export default function GlobalEffects() {
     if (!REDUCED) {
       const overlay = document.createElement('div');
       overlay.id = 'page-transition';
+      overlay.innerHTML = '<span class="page-transition__mark">AOS<i>.</i></span>';
       document.body.appendChild(overlay);
       overlayRef.current = overlay;
       // Fade in on initial load
@@ -174,6 +175,46 @@ export default function GlobalEffects() {
     underlineItems.forEach(el => underlineIO.observe(el));
 
     return () => { revealIO.disconnect(); underlineIO.disconnect(); };
+  }, [pathname]);
+
+  // ── Magnetic elements ([data-magnetic]) — desktop only ──
+  useEffect(() => {
+    if (window.matchMedia('(pointer: coarse)').matches) return;
+    const bound = new WeakSet<HTMLElement>();
+    const cleanups: (() => void)[] = [];
+    function wire() {
+      document.querySelectorAll<HTMLElement>('[data-magnetic]').forEach(el => {
+        if (bound.has(el)) return;
+        bound.add(el);
+        const strength = parseFloat(el.dataset.magnetic || '') || 0.3;
+        let raf = 0, cx = 0, cy = 0, tx = 0, ty = 0, active = false;
+        function loop() {
+          cx += (tx - cx) * 0.18; cy += (ty - cy) * 0.18;
+          el.style.transform = `translate(${cx.toFixed(2)}px, ${cy.toFixed(2)}px)`;
+          if (active || Math.abs(tx - cx) > 0.1 || Math.abs(ty - cy) > 0.1) raf = requestAnimationFrame(loop);
+          else { el.style.transform = ''; raf = 0; }
+        }
+        function move(e: MouseEvent) {
+          const r = el.getBoundingClientRect();
+          tx = (e.clientX - (r.left + r.width / 2)) * strength;
+          ty = (e.clientY - (r.top + r.height / 2)) * strength;
+          active = true;
+          if (!raf) raf = requestAnimationFrame(loop);
+        }
+        function leave() { tx = 0; ty = 0; active = false; if (!raf) raf = requestAnimationFrame(loop); }
+        el.addEventListener('mousemove', move);
+        el.addEventListener('mouseleave', leave);
+        cleanups.push(() => {
+          el.removeEventListener('mousemove', move);
+          el.removeEventListener('mouseleave', leave);
+          if (raf) cancelAnimationFrame(raf);
+          el.style.transform = '';
+        });
+      });
+    }
+    wire();
+    const t1 = setTimeout(wire, 400), t2 = setTimeout(wire, 1000);
+    return () => { clearTimeout(t1); clearTimeout(t2); cleanups.forEach(fn => fn()); };
   }, [pathname]);
 
   return null;

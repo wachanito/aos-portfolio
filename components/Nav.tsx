@@ -18,7 +18,16 @@ export default function Nav() {
   const [active,         setActive]         = useState('');
   const [dropOpen,       setDropOpen]       = useState(false);
   const [mobileSubOpen,  setMobileSubOpen]  = useState(false);
+  const [inverted,       setInverted]       = useState(false);
   const dropRef = useRef<HTMLLIElement>(null);
+
+  useEffect(() => { setInverted(document.documentElement.classList.contains('aos-invert')); }, []);
+  function toggleInvert() {
+    const on = !document.documentElement.classList.contains('aos-invert');
+    document.documentElement.classList.toggle('aos-invert', on);
+    try { localStorage.setItem('aos-invert', on ? '1' : '0'); } catch {}
+    setInverted(on);
+  }
 
   useEffect(() => {
     const sections = links.map(l => document.getElementById(l.href.slice(1))).filter(Boolean) as HTMLElement[];
@@ -115,23 +124,36 @@ export default function Nav() {
           </ul>
         </nav>
 
-        <button
-          className="nav-toggle"
-          aria-controls="mobile-nav"
-          aria-expanded={mobileOpen}
-          aria-label={mobileOpen ? 'Cerrar menú' : 'Abrir menú'}
-          onClick={() => {
-            setMobileOpen(o => {
-              const next = !o;
-              document.body.classList.toggle('nav-open', next);
-              return next;
-            });
-          }}
-        >
-          <span className="nav-toggle__bar" />
-          <span className="nav-toggle__bar" />
-          <span className="nav-toggle__bar" />
-        </button>
+        <div className="header-controls">
+          <button
+            className="invert-toggle"
+            type="button"
+            onClick={toggleInvert}
+            aria-pressed={inverted}
+            aria-label="Invertir colores"
+            title="Invertir colores"
+          >
+            <span className="invert-toggle__dot" aria-hidden="true" />
+          </button>
+
+          <button
+            className="nav-toggle"
+            aria-controls="mobile-nav"
+            aria-expanded={mobileOpen}
+            aria-label={mobileOpen ? 'Cerrar menú' : 'Abrir menú'}
+            onClick={() => {
+              setMobileOpen(o => {
+                const next = !o;
+                document.body.classList.toggle('nav-open', next);
+                return next;
+              });
+            }}
+          >
+            <span className="nav-toggle__bar" />
+            <span className="nav-toggle__bar" />
+            <span className="nav-toggle__bar" />
+          </button>
+        </div>
       </header>
 
       <div
